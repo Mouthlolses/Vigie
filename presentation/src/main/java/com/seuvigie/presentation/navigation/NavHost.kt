@@ -21,7 +21,6 @@ fun NavHost(
     navController: NavHostController = rememberNavController(),
 ) {
 
-
     Scaffold(
 
     ) { paddingValues ->
