@@ -40,7 +40,6 @@ import com.seuvigie.presentation.R
 @Composable
 fun RegisterScreen() {
 
-
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var phone by remember { mutableStateOf("") }
