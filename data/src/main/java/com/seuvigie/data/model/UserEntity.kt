@@ -1,20 +1,17 @@
 package com.seuvigie.data.model
 
-import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import kotlinx.parcelize.Parcelize
 
 
-@Parcelize
 @Entity(tableName = "users")
-data class User(
+data class UserEntity(
 
-    @PrimaryKey(autoGenerate = false)
-    val id: Long?,
+    @PrimaryKey(autoGenerate = true)
+    val id: Long = 0,
 
     var name: String,
     var email: String,
     var phone: String,
     var password: String
-) : Parcelable
+)

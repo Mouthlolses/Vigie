@@ -1,8 +1,9 @@
 plugins {
     alias(libs.plugins.android.library)
-    id("com.google.devtools.ksp")
-    id("kotlin-parcelize")
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.ksp)
+    id("kotlin-parcelize")
 }
 
 android {
@@ -30,15 +31,17 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "11"
+    kotlin {
+        jvmToolchain(17)
     }
 }
 
 dependencies {
+
+    implementation(project(":domain"))
 
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
@@ -46,6 +49,9 @@ dependencies {
     implementation(libs.androidx.media3.test.utils)
 
     ksp(libs.room.compiler)
+
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

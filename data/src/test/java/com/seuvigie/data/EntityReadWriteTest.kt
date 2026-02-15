@@ -5,7 +5,7 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import com.seuvigie.data.dao.UserDao
 import com.seuvigie.data.database.AppDatabase
-import com.seuvigie.data.model.User
+import com.seuvigie.data.model.UserEntity
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -21,8 +21,8 @@ class EntityReadWriteTest {
 
     object TestUtil {
 
-        fun createUser(id: Long): User {
-            return User(
+        fun createUser(id: Long): UserEntity {
+            return UserEntity(
                 id = id,
                 name = "user$id",
                 email = "mockk@gmail.com",
@@ -59,6 +59,5 @@ class EntityReadWriteTest {
         assertEquals(user, byName.first())
         println("Usuário retornado: $byName")
     }
-
 
 }

@@ -34,11 +34,14 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.seuvigie.presentation.R
 
 @Preview(showBackground = true)
 @Composable
 fun RegisterScreen() {
+
+    val viewModel: RegisterViewModel = hiltViewModel()
 
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
@@ -168,12 +171,20 @@ fun RegisterScreen() {
         Spacer(modifier = Modifier.height(24.dp))
 
         Button(
-            onClick = { },
+            onClick = {
+                viewModel.createUser(
+                    name = name,
+                    email = email,
+                    phone = phone,
+                    password = password
+                )
+            },
             enabled = acceptedTerms,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(52.dp),
-            shape = RoundedCornerShape(26.dp)        ) {
+            shape = RoundedCornerShape(26.dp)
+        ) {
             Text("Next")
         }
 
