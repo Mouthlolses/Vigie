@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -33,11 +34,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.seuvigie.presentation.R
 
 
@@ -46,7 +48,7 @@ import com.seuvigie.presentation.R
 fun LoginScreen(
     onNavigateRegister: () -> Unit = {}
 ) {
-    val viewModel: LoginViewModel = viewModel()
+    val viewModel: LoginViewModel = hiltViewModel()
     val state by viewModel.uiState.collectAsState()
 
 
@@ -58,6 +60,7 @@ fun LoginScreen(
 
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var passwordVisible by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -102,7 +105,7 @@ fun LoginScreen(
             modifier = Modifier
                 .fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
-            label = { Text("Username") },
+            label = { Text("Email") },
             singleLine = true
         )
 
@@ -129,7 +132,28 @@ fun LoginScreen(
             shape = RoundedCornerShape(12.dp),
             label = { Text("Password") },
             singleLine = true,
-            visualTransformation = PasswordVisualTransformation()
+            visualTransformation = if (passwordVisible)
+                VisualTransformation.None
+            else
+                PasswordVisualTransformation(),
+            trailingIcon = {
+                val image = if (passwordVisible)
+                    painterResource(R.drawable.outline_account_circle)
+                else
+                    painterResource(R.drawable.outline_image_default)
+
+                IconButton(onClick = {
+                    passwordVisible = !passwordVisible
+                }) {
+                    Icon(
+                        painter = image,
+                        contentDescription = if (passwordVisible)
+                            "Hide password"
+                        else
+                            "Show password"
+                    )
+                }
+            }
         )
 
         Row(
@@ -148,7 +172,12 @@ fun LoginScreen(
 
         // Login button
         Button(
-            onClick = { },
+            onClick = {
+                viewModel.authUser(
+                    username,
+                    password
+                )
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(52.dp),
