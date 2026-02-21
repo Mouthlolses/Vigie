@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.seuvigie.presentation.ui.home.HomeScreen
 import com.seuvigie.presentation.ui.login.LoginScreen
 import com.seuvigie.presentation.ui.register.RegisterScreen
 
@@ -40,12 +41,19 @@ fun NavHost(
                 ) {
                     composable<Routes.Login> {
                         LoginScreen(
-                            onNavigateRegister = { navController.navigate(Routes.Register)}
+                            onNavigateInit = { navController.navigate(Routes.Home) },
+                            onNavigateRegister = { navController.navigate(Routes.Register) }
                         )
                     }
 
                     composable<Routes.Register> {
-                        RegisterScreen()
+                        RegisterScreen(
+                            onNavigateInit = { navController.navigate(Routes.Home) }
+                        )
+                    }
+
+                    composable<Routes.Home> {
+                        HomeScreen()
                     }
                 }
             }

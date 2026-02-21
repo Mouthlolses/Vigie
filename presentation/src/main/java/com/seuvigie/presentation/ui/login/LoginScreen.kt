@@ -23,7 +23,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,16 +39,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.seuvigie.presentation.R
 
 
 @Preview(showBackground = true)
 @Composable
 fun LoginScreen(
+    onNavigateInit: () -> Unit = {},
     onNavigateRegister: () -> Unit = {}
 ) {
     val viewModel: LoginViewModel = hiltViewModel()
-    val state by viewModel.uiState.collectAsState()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
 
 
     LaunchedEffect(state.goToRegister) {
@@ -58,8 +59,12 @@ fun LoginScreen(
         }
     }
 
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    LaunchedEffect(state.goToInit) {
+        if (state.goToInit) {
+            onNavigateInit()
+        }
+    }
+
     var passwordVisible by remember { mutableStateOf(false) }
 
     Column(
@@ -100,8 +105,8 @@ fun LoginScreen(
 
         // Username
         OutlinedTextField(
-            value = username,
-            onValueChange = { username = it },
+            value = state.userEmail,
+            onValueChange = { viewModel.updateUserEmail(it) },
             modifier = Modifier
                 .fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
@@ -125,8 +130,8 @@ fun LoginScreen(
 
         // Password
         OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
+            value = state.password,
+            onValueChange = { viewModel.updatePassword(it) },
             modifier = Modifier
                 .fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
@@ -173,10 +178,7 @@ fun LoginScreen(
         // Login button
         Button(
             onClick = {
-                viewModel.authUser(
-                    username,
-                    password
-                )
+                viewModel.login()
             },
             modifier = Modifier
                 .fillMaxWidth()

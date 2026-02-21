@@ -29,9 +29,7 @@ class UserRepositoryImpl @Inject constructor(
             Log.d("UserRepo", "Firebase registrou UID: $uid")
 
             // 2️⃣ cria entidade completa
-            val userEntity = user
-                .copy(remoteUiId = uid)
-                .toEntity()
+            val userEntity = user.toEntity(uid)
 
             Log.d("UserRepo", "Salvando no Firestore")
 

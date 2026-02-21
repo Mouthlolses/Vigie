@@ -3,12 +3,11 @@ package com.seuvigie.data.mapper
 import com.seuvigie.data.model.UserEntity
 import com.seuvigie.domain.model.UserCreation
 
-fun UserCreation.toEntity(): UserEntity {
+fun UserCreation.toEntity(uid: String): UserEntity {
     return UserEntity(
-        id = id ?: 0,
-        remoteUiId = remoteUiId ?: "",
+        remoteUiId = uid,
         name = name,
         email = email,
-        phone = phone,
+        phone = phone
     )
 }

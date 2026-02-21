@@ -21,6 +21,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,22 +38,29 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.seuvigie.presentation.R
 
 @Preview(showBackground = true)
 @Composable
-fun RegisterScreen() {
+fun RegisterScreen(
+    onNavigateInit: () -> Unit = {}
+) {
 
     val viewModel: RegisterViewModel = hiltViewModel()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
 
-    var name by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var phone by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
-    var confirmPassword by remember { mutableStateOf("") }
     var confirmPasswordVisible by remember { mutableStateOf(false) }
     var acceptedTerms by remember { mutableStateOf(false) }
+
+
+    LaunchedEffect(state.goToInit) {
+        if (state.goToInit) {
+            onNavigateInit()
+        }
+    }
+
 
     Column(
         modifier = Modifier
@@ -89,8 +97,8 @@ fun RegisterScreen() {
         Spacer(modifier = Modifier.height(32.dp))
 
         OutlinedTextField(
-            value = name,
-            onValueChange = { name = it },
+            value = state.userName,
+            onValueChange = { viewModel.updateUsername(it) },
             modifier = Modifier.fillMaxWidth(),
             label = { Text("Name") },
             shape = RoundedCornerShape(12.dp),
@@ -100,8 +108,8 @@ fun RegisterScreen() {
         Spacer(modifier = Modifier.height(12.dp))
 
         OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
+            value = state.email,
+            onValueChange = { viewModel.updateEmail(it) },
             modifier = Modifier.fillMaxWidth(),
             label = { Text("Email Address") },
             shape = RoundedCornerShape(12.dp),
@@ -114,8 +122,8 @@ fun RegisterScreen() {
         Spacer(modifier = Modifier.height(12.dp))
 
         OutlinedTextField(
-            value = phone,
-            onValueChange = { phone = it },
+            value = state.phone,
+            onValueChange = { viewModel.updatePhoneNumber(it) },
             modifier = Modifier.fillMaxWidth(),
             label = { Text("Mobile Number") },
             shape = RoundedCornerShape(12.dp),
@@ -131,8 +139,8 @@ fun RegisterScreen() {
         Spacer(modifier = Modifier.height(12.dp))
 
         OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
+            value = state.password,
+            onValueChange = { viewModel.updatePassword(it) },
             modifier = Modifier.fillMaxWidth(),
             label = { Text("Password") },
             shape = RoundedCornerShape(12.dp),
@@ -167,8 +175,8 @@ fun RegisterScreen() {
         Spacer(modifier = Modifier.height(12.dp))
 
         OutlinedTextField(
-            value = confirmPassword,
-            onValueChange = { confirmPassword = it },
+            value = state.confirmPassword,
+            onValueChange = { viewModel.updateConfirmPassword(it) },
             modifier = Modifier.fillMaxWidth(),
             label = { Text("Confirm Password") },
             shape = RoundedCornerShape(12.dp),
@@ -218,12 +226,7 @@ fun RegisterScreen() {
 
         Button(
             onClick = {
-                viewModel.createUser(
-                    name = name,
-                    email = email,
-                    phone = phone,
-                    password = password
-                )
+                viewModel.registerUser()
             },
             enabled = acceptedTerms,
             modifier = Modifier
