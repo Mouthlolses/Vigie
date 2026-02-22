@@ -8,6 +8,7 @@ fun UserCreation.toEntity(uid: String): UserEntity {
         remoteUiId = uid,
         name = name,
         email = email,
-        phone = phone
+        phone = phone,
+        syncPending = syncPending
     )
 }

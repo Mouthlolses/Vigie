@@ -76,7 +76,8 @@ class RegisterViewModel @Inject constructor(
                 name = userName,
                 email = email,
                 phone = phoneNumber,
-                password = password
+                password = password,
+                syncPending = false
             )
 
             try {

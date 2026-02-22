@@ -8,7 +8,15 @@ class UserLocalDataSource @Inject constructor(
     private val userDao: UserDao
 ) {
 
-    suspend fun insert(user: UserEntity) {
+    suspend fun save(user: UserEntity) {
         userDao.insertUser(user)
+    }
+
+    suspend fun clear() {
+        userDao.clearUser()
+    }
+
+    suspend fun get(): UserEntity? {
+        return userDao.getUser()
     }
 }

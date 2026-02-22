@@ -29,22 +29,29 @@ class UserRepositoryImpl @Inject constructor(
             Log.d("UserRepo", "Firebase registrou UID: $uid")
 
             // 2️⃣ cria entidade completa
-            val userEntity = user.toEntity(uid)
-
-            Log.d("UserRepo", "Salvando no Firestore")
-
-            // 3️⃣ salva no Firestore
-            userRemote.saveUser(userEntity)
+            val userEntity = user.toEntity(uid).copy(syncPending = true)
 
             Log.d("UserRepo", "Salvando no Room")
 
-
             // 4️⃣ salva local
-            userLocal.insert(userEntity)
+            userLocal.save(userEntity)
+
+            try {
+                Log.d("UserRepo", "Salvando no Firestore")
+                userRemote.saveUser(userEntity)
+
+                userLocal.save(userEntity.copy(syncPending = false))
+
+            } catch (e: Exception) {
+                Log.d("UserRepo", "Erro ao salvar/sincronizar usuário: ${e.message}")
+            }
+            // 3️⃣ salva no Firestore
 
             Log.d("UserRepo", "Usuário salvo localmente com sucesso")
 
-            Result.success(userEntity.toDomain())
+            val finalUser = userLocal.get()!!
+
+            Result.success(finalUser.toDomain())
 
         } catch (e: Exception) {
             Log.e("UserRepo", "Erro ao criar usuário", e)
@@ -69,7 +76,7 @@ class UserRepositoryImpl @Inject constructor(
             Log.d("UserRepo", "Perfil buscado no Firestore: $remoteUser")
 
             // 3️⃣ salva local
-            userLocal.insert(remoteUser)
+            userLocal.save(remoteUser)
             Log.d("UserRepo", "Usuário salvo localmente")
 
 
