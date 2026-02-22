@@ -11,5 +11,8 @@ sealed class Routes {
     data object Register : Routes()
 
     @Serializable
+    data object OnBoarding : Routes()
+
+    @Serializable
     data object Home : Routes()
 }

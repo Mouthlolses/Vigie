@@ -14,6 +14,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.seuvigie.presentation.ui.home.HomeScreen
 import com.seuvigie.presentation.ui.login.LoginScreen
+import com.seuvigie.presentation.ui.onboarding.OnBoardingScreen
 import com.seuvigie.presentation.ui.register.RegisterScreen
 
 
@@ -48,8 +49,12 @@ fun NavHost(
 
                     composable<Routes.Register> {
                         RegisterScreen(
-                            onNavigateInit = { navController.navigate(Routes.Home) }
+                            onNavigateInit = { navController.navigate(Routes.OnBoarding) }
                         )
+                    }
+
+                    composable<Routes.OnBoarding> {
+                        OnBoardingScreen()
                     }
 
                     composable<Routes.Home> {
