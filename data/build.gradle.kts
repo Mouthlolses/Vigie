@@ -38,6 +38,9 @@ dependencies {
 
     implementation(project(":domain"))
 
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 

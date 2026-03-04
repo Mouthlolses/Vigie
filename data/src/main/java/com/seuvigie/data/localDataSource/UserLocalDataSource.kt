@@ -4,7 +4,7 @@ import com.seuvigie.data.database.dao.UserDao
 import com.seuvigie.data.model.UserEntity
 import javax.inject.Inject
 
-class LocalDataSource @Inject constructor(
+class UserLocalDataSource @Inject constructor(
     private val userDao: UserDao
 ) {
 
