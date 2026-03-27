@@ -1,13 +1,18 @@
 package com.seuvigie.presentation.navigation
 
+import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.seuvigie.presentation.navigation.routes.Routes
-import com.seuvigie.presentation.screens.login.LoginScreen
+import com.seuvigie.presentation.screens.login.loginScreen.LoginScreen
+import com.seuvigie.presentation.screens.login.registerScreen.RegisterScreen
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @OptIn(ExperimentalSerializationApi::class, ExperimentalSharedTransitionApi::class)
@@ -18,10 +23,37 @@ fun AppRoot() {
 
     NavHost(
         startDestination = Routes.Login,
-        navController = navController
+        navController = navController,
+        enterTransition = {
+            slideIntoContainer(
+                AnimatedContentTransitionScope.SlideDirection.Up,
+                animationSpec = tween(700)
+            ) + fadeIn(animationSpec = tween(700))
+        },
+        exitTransition = {
+            slideOutOfContainer(
+                AnimatedContentTransitionScope.SlideDirection.Down,
+                animationSpec = tween(700)
+            ) + fadeOut(animationSpec = tween(700))
+        }
+
     ) {
-        composable<Routes.Login>{
-            LoginScreen()
+        composable<Routes.Login> {
+            LoginScreen(
+                onNavigate = {
+                    navController.navigate(
+                        Routes.Register
+                    )
+                }
+            )
+        }
+
+        composable<Routes.Register> {
+            RegisterScreen(
+                onBackToLogin = {
+                    navController.popBackStack()
+                }
+            )
         }
     }
 }

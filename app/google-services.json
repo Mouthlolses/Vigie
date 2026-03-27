@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "263174142658",
+    "project_id": "vigie-fbdd2",
+    "storage_bucket": "vigie-fbdd2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:263174142658:android:7e8f0e6350761a2405995b",
+        "android_client_info": {
+          "package_name": "com.seuvigie.vigie"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "263174142658-93d6mnnmtd3l777ea4n11069hbi40tml.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4Go98KmrZ4kUddKU1RcZla-UBFsR65uI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "263174142658-93d6mnnmtd3l777ea4n11069hbi40tml.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

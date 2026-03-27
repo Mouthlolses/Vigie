@@ -1,4 +1,4 @@
-package com.seuvigie.presentation.screens.login
+package com.seuvigie.presentation.screens.login.loginScreen
 
 data class LoginUiState(
     val email: String = "",

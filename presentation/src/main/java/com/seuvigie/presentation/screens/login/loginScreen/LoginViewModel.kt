@@ -1,4 +1,4 @@
-package com.seuvigie.presentation.screens.login
+package com.seuvigie.presentation.screens.login.loginScreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
