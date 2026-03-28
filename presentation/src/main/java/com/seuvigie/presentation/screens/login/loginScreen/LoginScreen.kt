@@ -9,10 +9,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -25,11 +28,15 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.seuvigie.presentation.R
 import com.seuvigie.presentation.components.LoginButton
 import com.seuvigie.presentation.components.LoginTextField
 
@@ -42,6 +49,7 @@ fun LoginScreen(
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var passwordVisible by remember { mutableStateOf(false) }
 
 
     Column(
@@ -56,7 +64,7 @@ fun LoginScreen(
                     )
                 )
             )
-            .padding(horizontal = 26.dp),
+            .padding(horizontal = 24.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -89,7 +97,30 @@ fun LoginScreen(
             value = password,
             onValueChange = { password = it },
             placeholder = "Password",
-            icon = Icons.Default.Lock
+            icon = Icons.Default.Lock,
+            trailingIcon = {
+                val image = if (passwordVisible)
+                    painterResource(R.drawable.eye)
+                else
+                    painterResource(R.drawable.eye_slash)
+
+                IconButton(onClick = {
+                    passwordVisible = !passwordVisible
+                }) {
+                    Icon(
+                        painter = image,
+                        contentDescription = "Toggle password visibility",
+                        modifier = Modifier
+                            .size(26.dp),
+                        tint = Color.White
+                    )
+                }
+            },
+            visualTransformation = if (passwordVisible) {
+                VisualTransformation.None
+            } else {
+                PasswordVisualTransformation()
+            }
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -113,7 +144,7 @@ fun LoginScreen(
             )
         }
 
-        Spacer(modifier = Modifier.height(18.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         LoginButton()
 

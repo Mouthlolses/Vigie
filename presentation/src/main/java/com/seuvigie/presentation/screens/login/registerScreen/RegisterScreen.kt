@@ -17,6 +17,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -32,11 +33,15 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.seuvigie.presentation.R
 import com.seuvigie.presentation.components.LoginButton
 import com.seuvigie.presentation.components.LoginTextField
 
@@ -47,11 +52,13 @@ fun RegisterScreen(
     onBackToLogin: () -> Unit = {}
 ) {
 
-    var confirmPassword by remember { mutableStateOf("") }
 
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
+    var passwordVisible by remember { mutableStateOf(false) }
+
 
     val isValid = name.isNotBlank() &&
             email.contains("@") &&
@@ -66,14 +73,17 @@ fun RegisterScreen(
                     IconButton(
                         onClick = {
                             onBackToLogin()
-                        }
+                        },
+                        colors = IconButtonDefaults.iconButtonColors(
+                            containerColor = Color.White,
+                        )
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Default.ArrowBack,
                             contentDescription = "back",
                             modifier = Modifier
                                 .size(26.dp),
-                            tint = Color.White
+                            tint = Color(0xFF7B1FFF)
                         )
                     }
                 },
@@ -95,7 +105,7 @@ fun RegisterScreen(
                         )
                     )
                 )
-                .padding(horizontal = 26.dp),
+                .padding(horizontal = 24.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -138,7 +148,60 @@ fun RegisterScreen(
                 value = password,
                 onValueChange = { password = it },
                 placeholder = "Password",
-                icon = Icons.Default.Lock
+                icon = Icons.Default.Lock,
+                trailingIcon = {
+                    val image = if (passwordVisible)
+                        painterResource(R.drawable.eye)
+                    else
+                        painterResource(R.drawable.eye_slash)
+
+                    IconButton(onClick = {
+                        passwordVisible = !passwordVisible
+                    }) {
+                        Icon(
+                            painter = image,
+                            contentDescription = "Toggle password visibility",
+                            modifier = Modifier
+                                .size(26.dp),
+                            tint = Color.White
+                        )
+                    }
+                },
+                visualTransformation = if (passwordVisible) {
+                    VisualTransformation.None
+                } else {
+                    PasswordVisualTransformation()
+                }
+            )
+
+            LoginTextField(
+                value = confirmPassword,
+                onValueChange = { confirmPassword = it },
+                placeholder = "Confirm Password",
+                icon = Icons.Default.Lock,
+                trailingIcon = {
+                    val image = if (passwordVisible)
+                        painterResource(R.drawable.eye)
+                    else
+                        painterResource(R.drawable.eye_slash)
+
+                    IconButton(onClick = {
+                        passwordVisible = !passwordVisible
+                    }) {
+                        Icon(
+                            painter = image,
+                            contentDescription = "Toggle password visibility",
+                            modifier = Modifier
+                                .size(26.dp),
+                            tint = Color.White
+                        )
+                    }
+                },
+                visualTransformation = if (passwordVisible) {
+                    VisualTransformation.None
+                } else {
+                    PasswordVisualTransformation()
+                }
             )
 
             Spacer(modifier = Modifier.height(28.dp))
@@ -148,7 +211,7 @@ fun RegisterScreen(
                 enabled = isValid
             )
 
-            Spacer(modifier = Modifier.height(300.dp))
+            Spacer(modifier = Modifier.height(200.dp))
         }
     }
 }

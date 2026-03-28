@@ -1,6 +1,7 @@
 package com.seuvigie.presentation.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
@@ -12,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
@@ -21,7 +23,9 @@ fun LoginTextField(
     value: String = "",
     onValueChange: (String) -> Unit = {},
     placeholder: String = "",
-    icon: ImageVector = Icons.Default.Email
+    icon: ImageVector = Icons.Default.Email,
+    trailingIcon: @Composable (() -> Unit?) = { null },
+    visualTransformation: VisualTransformation = VisualTransformation.None
 ) {
     OutlinedTextField(
         value = value,
@@ -36,6 +40,10 @@ fun LoginTextField(
                 tint = Color.White
             )
         },
+        visualTransformation = visualTransformation,
+        trailingIcon = {
+            trailingIcon()
+        },
         singleLine = true,
         shape = RoundedCornerShape(50.dp),
         colors = OutlinedTextFieldDefaults.colors(
@@ -47,6 +55,8 @@ fun LoginTextField(
             focusedTextColor = Color.White,
             unfocusedTextColor = Color.White
         ),
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .height(68.dp)
+            .fillMaxWidth()
     )
 }
