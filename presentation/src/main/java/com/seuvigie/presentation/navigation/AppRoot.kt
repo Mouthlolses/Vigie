@@ -11,6 +11,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.seuvigie.presentation.navigation.routes.Routes
+import com.seuvigie.presentation.screens.home.HomeScreen
+import com.seuvigie.presentation.screens.home.detail.DetailScreen
 import com.seuvigie.presentation.screens.login.loginScreen.LoginScreen
 import com.seuvigie.presentation.screens.login.registerScreen.RegisterScreen
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -44,6 +46,11 @@ fun AppRoot() {
                     navController.navigate(
                         Routes.Register
                     )
+                },
+                onNavigateHome = {
+                    navController.navigate(
+                        Routes.Home
+                    )
                 }
             )
         }
@@ -54,6 +61,20 @@ fun AppRoot() {
                     navController.popBackStack()
                 }
             )
+        }
+
+        composable<Routes.Home> {
+            HomeScreen(
+                onNavigate = {
+                    navController.navigate(
+                        Routes.Details
+                    )
+                }
+            )
+        }
+
+        composable<Routes.Details> {
+            DetailScreen()
         }
     }
 }

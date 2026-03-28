@@ -44,7 +44,9 @@ import com.seuvigie.presentation.components.LoginTextField
 @Preview(showBackground = true)
 @Composable
 fun LoginScreen(
-    onNavigate: () -> Unit = {}
+    onNavigate: () -> Unit = {},
+    onNavigateHome: () -> Unit = {}
+
 ) {
 
     var email by remember { mutableStateOf("") }
@@ -146,7 +148,11 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        LoginButton()
+        LoginButton(
+            onClick = {
+                onNavigateHome()
+            }
+        )
 
         Spacer(modifier = Modifier.height(300.dp))
     }

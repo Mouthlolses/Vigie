@@ -20,10 +20,13 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun LoginButton(
     text: String = "Vamos lá",
-    enabled: Boolean = true
+    enabled: Boolean = true,
+    onClick: () -> Unit = {}
 ) {
     Button(
-        onClick = {},
+        onClick = {
+            onClick()
+        },
         modifier = Modifier
             .fillMaxWidth()
             .height(54.dp)
