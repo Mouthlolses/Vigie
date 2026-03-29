@@ -72,17 +72,14 @@ fun RegisterScreen(
                     IconButton(
                         onClick = {
                             onBackToLogin()
-                        },
-                        colors = IconButtonDefaults.iconButtonColors(
-                            containerColor = Color.White,
-                        )
+                        }
                     ) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                            painter = painterResource(R.drawable.ic_action_outline_arrow_back),
                             contentDescription = "back",
                             modifier = Modifier
                                 .size(26.dp),
-                            tint = Color(0xFF7B1FFF)
+                            tint = Color.White
                         )
                     }
                 },

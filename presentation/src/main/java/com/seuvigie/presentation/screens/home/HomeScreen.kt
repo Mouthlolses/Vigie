@@ -47,9 +47,8 @@ fun HomeScreen(
         Column(modifier = Modifier.fillMaxSize()) {
             Box(
                 modifier = Modifier
-                    .weight(1f)
+                    .weight(0.6f)
                     .fillMaxWidth()
-                    .padding(bottom = 68.dp)
                     .background(Color(0xFF5A00D1))
             )
             Box(
