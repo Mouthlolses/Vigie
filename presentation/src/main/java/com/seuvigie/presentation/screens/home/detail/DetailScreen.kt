@@ -53,7 +53,9 @@ fun DetailScreen(
         {
             ScreenSavingTips()
         },
-        { }
+        {
+
+        }
     )
 
     val pagerState = rememberPagerState(
@@ -63,9 +65,7 @@ fun DetailScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = {
-
-                },
+                title = { },
                 navigationIcon = {
                     IconButton(
                         onClick = {

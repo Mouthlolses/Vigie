@@ -51,7 +51,10 @@ fun HomeScreen(
     if (openDialog) {
         DialogAddReminder(
             openDialog = true,
-            onDismiss = { openDialog = false }
+            onDismiss = { openDialog = false },
+            onSave = { type, recurring, months ->
+
+            }
         )
     }
 
@@ -95,7 +98,7 @@ fun HomeScreen(
                 shape = RoundedCornerShape(24.dp),
                 modifier = Modifier
                     .fillMaxWidth(0.9f)
-                    .heightIn(max = 500.dp),
+                    .heightIn(max = 600.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = Color.White
                 ),
@@ -129,7 +132,7 @@ fun HomeScreen(
             ) {
                 FloatingActionButton(
                     onClick = { openDialog = true },
-                    containerColor = Color(0xFF2962FF),
+                    containerColor = Color(0xFF5A00D1),
                     shape = CircleShape,
                     modifier = Modifier
                         .offset(y = (-24).dp)
