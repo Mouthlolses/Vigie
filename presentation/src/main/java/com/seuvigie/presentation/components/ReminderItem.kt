@@ -1,6 +1,8 @@
 package com.seuvigie.presentation.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -9,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -28,11 +31,23 @@ fun ReminderItem(
     month: String = "January",
     days: Int = 2,
     isPast: Boolean = true,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
+    rowEnable: Boolean = false
 ) {
 
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                color = Color.White,
+                shape = RoundedCornerShape(26.dp)
+            )
+            .clickable(
+                enabled = rowEnable,
+                onClick = {
+                    onClick()
+                }
+            ),
         verticalAlignment = Alignment.CenterVertically
     ) {
 
@@ -46,16 +61,25 @@ fun ReminderItem(
 
             Spacer(modifier = Modifier.height(6.dp))
 
-            Button(
-                onClick = {
-                    onClick()
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = if (isPast) Color.Red else Color(0xFF7B1FFF)
-                ),
-                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
+            LazyRow(
+                Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                Text("Details", fontSize = 12.sp)
+                items(3) {
+                    Button(
+                        onClick = {
+
+                        },
+                        shape = RoundedCornerShape(28.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = if (isPast) Color.Red else Color(0xFF7B1FFF)
+                        ),
+                        contentPadding = PaddingValues(horizontal = 12.dp)
+                    ) {
+                        Text("Details", fontSize = 12.sp)
+                    }
+                }
             }
         }
 

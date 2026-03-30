@@ -74,7 +74,11 @@ fun AppRoot() {
         }
 
         composable<Routes.Details> {
-            DetailScreen()
+            DetailScreen(
+                onBackHomeScreen = {
+                    navController.popBackStack()
+                }
+            )
         }
     }
 }

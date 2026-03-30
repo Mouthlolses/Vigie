@@ -19,6 +19,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.seuvigie.presentation.screens.home.detail.screensForDetails.bill.BillScreen
+import com.seuvigie.presentation.screens.home.detail.screensForDetails.paidBills.PaidBillsScreen
+import com.seuvigie.presentation.screens.home.detail.screensForDetails.reminders.RemindersScreen
 import com.seuvigie.presentation.utils.Destinations
 
 @Preview(showBackground = true)
@@ -35,7 +38,6 @@ fun DetailTab() {
 
     Column {
 
-        // 🔹 Tabs
         SecondaryTabRow(
             selectedTabIndex = selectedDestinations.ordinal,
             containerColor = Color.Transparent,
@@ -73,13 +75,13 @@ fun DetailTab() {
             modifier = Modifier.fillMaxSize()
         ) {
             composable(Destinations.BILL.route) {
-                Text("Tela de Contas")
+                BillScreen()
             }
             composable(Destinations.REMINDERS.route) {
-                Text("Tela de Lembretes")
+                RemindersScreen()
             }
             composable(Destinations.PAIDBILLS.route) {
-                Text("Tela de Contas Pagas")
+                PaidBillsScreen()
             }
         }
     }

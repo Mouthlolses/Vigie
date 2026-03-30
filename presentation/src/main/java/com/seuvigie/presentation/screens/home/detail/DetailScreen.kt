@@ -10,7 +10,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -32,12 +33,32 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.seuvigie.presentation.R
 import com.seuvigie.presentation.components.DetailTab
+import com.seuvigie.presentation.components.ReminderItem
+import com.seuvigie.presentation.screens.home.detail.pagerContents.ScreenSavingTips
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
-fun DetailScreen() {
+fun DetailScreen(
+    onBackHomeScreen: () -> Unit = {}
+) {
+
+    val pages: List<@Composable () -> Unit> = listOf(
+        {
+            ReminderItem(
+                rowEnable = false
+            )
+        },
+        {
+            ScreenSavingTips()
+        },
+        { }
+    )
+
+    val pagerState = rememberPagerState(
+        pageCount = { pages.size }
+    )
 
     Scaffold(
         topBar = {
@@ -48,7 +69,7 @@ fun DetailScreen() {
                 navigationIcon = {
                     IconButton(
                         onClick = {
-
+                            onBackHomeScreen()
                         }
                     ) {
                         Icon(
@@ -107,20 +128,20 @@ fun DetailScreen() {
                     shape = RoundedCornerShape(24.dp),
                     modifier = Modifier
                         .fillMaxWidth(0.86f)
-                        .heightIn(max = 200.dp),
+                        .heightIn(min = 125.dp, max = 200.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = Color.White
                     ),
                     elevation = CardDefaults.cardElevation(8.dp)
                 ) {
-                    LazyRow(
+                    HorizontalPager(
+                        state = pagerState,
                         modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp)
-                    ) {
-                        item {
-
-                        }
+                            .fillMaxWidth()
+                            .padding(start = 12.dp, end = 12.dp, top = 26.dp, bottom = 26.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) { page ->
+                        pages[page]()
                     }
                 }
 
