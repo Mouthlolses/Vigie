@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "263174142658-t32emcgkoc69cc5hj3oslufrfqjjdgd8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.seuvigie.vigie",
+            "certificate_hash": "3ccbc485176fa62bd6618f88b322f5e1499a23e5"
+          }
+        },
+        {
           "client_id": "263174142658-93d6mnnmtd3l777ea4n11069hbi40tml.apps.googleusercontent.com",
           "client_type": 3
         }
