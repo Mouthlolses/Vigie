@@ -33,6 +33,9 @@ android {
 }
 
 dependencies {
+
+    implementation(libs.javax.inject)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

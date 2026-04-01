@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -21,7 +22,8 @@ import androidx.compose.ui.unit.sp
 fun LoginButton(
     text: String = "Vamos lá",
     enabled: Boolean = true,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
+    loading: Boolean = false
 ) {
     Button(
         onClick = {
@@ -37,11 +39,17 @@ fun LoginButton(
             contentColor = Color(0xFF7B1FFF),
         )
     ) {
-        Text(
-            text = text,
-            fontSize = 18.sp,
-            fontFamily = FontFamily.Default,
-            fontWeight = FontWeight.Black
-        )
+        if (loading) {
+            CircularProgressIndicator(
+                color = Color(0xFF7B1FFF)
+            )
+        } else {
+            Text(
+                text = text,
+                fontSize = 18.sp,
+                fontFamily = FontFamily.Default,
+                fontWeight = FontWeight.Black
+            )
+        }
     }
 }

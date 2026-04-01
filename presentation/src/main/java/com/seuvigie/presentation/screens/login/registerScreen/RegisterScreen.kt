@@ -21,6 +21,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,31 +38,35 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.seuvigie.presentation.R
 import com.seuvigie.presentation.components.LoginButton
 import com.seuvigie.presentation.components.LoginTextField
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview(showBackground = true)
 @Composable
 fun RegisterScreen(
-    onBackToLogin: () -> Unit = {}
+    onBackToLogin: () -> Unit,
+    onNavigateHome: () -> Unit
 ) {
 
-    var name by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var confirmPassword by remember { mutableStateOf("") }
+    val viewModel: RegisterViewModel = hiltViewModel()
+    val uiState by viewModel.uiState.collectAsState()
+
     var passwordVisible by remember { mutableStateOf(false) }
 
 
-    val isValid = name.isNotBlank() &&
-            email.contains("@") &&
-            password.length >= 6
+    val isValid = uiState.name.isNotBlank() &&
+            uiState.email.contains("@") &&
+            uiState.password.length >= 6
 
+    LaunchedEffect(uiState.isSuccess) {
+        if (uiState.isSuccess) {
+            onNavigateHome()
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -124,23 +130,23 @@ fun RegisterScreen(
 
             // Nome
             LoginTextField(
-                value = name,
-                onValueChange = { name = it },
+                value = uiState.name,
+                onValueChange = { viewModel.updateName(it) },
                 placeholder = "Nome",
                 icon = Icons.Default.Person
             )
 
             // Email
             LoginTextField(
-                value = email,
-                onValueChange = { email = it },
+                value = uiState.email,
+                onValueChange = { viewModel.updateEmail(it) },
                 placeholder = "Email"
             )
 
             // Senha
             LoginTextField(
-                value = password,
-                onValueChange = { password = it },
+                value = uiState.password,
+                onValueChange = { viewModel.updatePassword(it) },
                 placeholder = "Password",
                 icon = Icons.Default.Lock,
                 trailingIcon = {
@@ -169,8 +175,8 @@ fun RegisterScreen(
             )
 
             LoginTextField(
-                value = confirmPassword,
-                onValueChange = { confirmPassword = it },
+                value = uiState.confirmPassword,
+                onValueChange = { viewModel.updateConfirmPassword(it) },
                 placeholder = "Confirm Password",
                 icon = Icons.Default.Lock,
                 trailingIcon = {
@@ -202,7 +208,14 @@ fun RegisterScreen(
 
             LoginButton(
                 text = "Cadastrar",
-                enabled = isValid
+                enabled = isValid,
+                onClick = {
+                    viewModel.registerUser(
+                        email = uiState.email,
+                        password = uiState.password
+                    )
+                },
+                loading = uiState.isLoading
             )
 
             Spacer(modifier = Modifier.height(200.dp))

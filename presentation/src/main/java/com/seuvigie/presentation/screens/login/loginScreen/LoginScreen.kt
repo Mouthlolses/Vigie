@@ -1,5 +1,8 @@
 package com.seuvigie.presentation.screens.login.loginScreen
 
+import android.app.Activity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,10 +21,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,32 +38,79 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
 import com.seuvigie.presentation.R
 import com.seuvigie.presentation.components.LoginButton
 import com.seuvigie.presentation.components.LoginTextField
 
 
-@Preview(showBackground = true)
 @Composable
 fun LoginScreen(
-    onNavigate: () -> Unit = {},
-    onNavigateHome: () -> Unit = {}
-
+    webClientId: String,
+    onNavigate: () -> Unit,
+    onNavigateHome: () -> Unit
 ) {
 
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    val viewModel: LoginViewModel = hiltViewModel()
+    val uiState by viewModel.uiState.collectAsState()
+
+    val context = LocalContext.current
+
     var passwordVisible by remember { mutableStateOf(false) }
 
+
+    LaunchedEffect(uiState.isSuccess) {
+        if (uiState.isSuccess) {
+            onNavigateHome()
+        }
+    }
+
+    val googleSignInClient = remember {
+        val options = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(webClientId)
+            .requestEmail()
+            .build()
+
+        GoogleSignIn.getClient(context, options)
+    }
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+
+        if (result.resultCode == Activity.RESULT_OK) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+
+            try {
+                val account = task.getResult(ApiException::class.java)
+                val idToken = account.idToken
+
+                if (idToken != null) {
+                    viewModel.loginWithGoogle(idToken)
+                }
+
+            } catch (e: Exception) {
+                // tratar erro
+            }
+        }
+    }
+
+
+    if (uiState.isLoading) {
+        CircularProgressIndicator()
+    }
 
     Column(
         modifier = Modifier
@@ -76,7 +129,7 @@ fun LoginScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        Spacer(modifier = Modifier.height(150.dp))
+        Spacer(modifier = Modifier.height(76.dp))
         Text(
             text = "Vigie",
             fontSize = 42.sp,
@@ -95,14 +148,14 @@ fun LoginScreen(
 
 
         LoginTextField(
-            value = email,
-            onValueChange = { email = it },
+            value = uiState.email,
+            onValueChange = { viewModel.updateEmail(it) },
             placeholder = "Email"
         )
 
         LoginTextField(
-            value = password,
-            onValueChange = { password = it },
+            value = uiState.password,
+            onValueChange = { viewModel.updatePassword(it) },
             placeholder = "Password",
             icon = Icons.Default.Lock,
             trailingIcon = {
@@ -130,12 +183,21 @@ fun LoginScreen(
             }
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+
+        uiState.errorMessage?.let {
+            Text(text = it, color = Color.Red)
+        }
+
+        Spacer(modifier = Modifier.height(2.dp))
 
         LoginButton(
             onClick = {
-                onNavigateHome()
-            }
+                viewModel.loginWithEmailAndPassword(
+                    email = uiState.email,
+                    password = uiState.password
+                )
+            },
+            loading = uiState.isLoading
         )
 
         Spacer(modifier = Modifier.height(2.dp))
@@ -152,7 +214,7 @@ fun LoginScreen(
 
         Button(
             onClick = {
-
+                launcher.launch(googleSignInClient.signInIntent)
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -204,6 +266,6 @@ fun LoginScreen(
             )
         }
 
-        Spacer(modifier = Modifier.height(220.dp))
+        Spacer(modifier = Modifier.height(180.dp))
     }
 }

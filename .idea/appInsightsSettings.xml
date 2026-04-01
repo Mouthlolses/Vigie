@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.seuvigie.vigie" />
+                  <option name="mobileSdkAppId" value="1:263174142658:android:7e8f0e6350761a2405995b" />
+                  <option name="projectId" value="vigie-fbdd2" />
+                  <option name="projectNumber" value="263174142658" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

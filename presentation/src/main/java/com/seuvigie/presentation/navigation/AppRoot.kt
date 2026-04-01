@@ -19,7 +19,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 
 @OptIn(ExperimentalSerializationApi::class, ExperimentalSharedTransitionApi::class)
 @Composable
-fun AppRoot() {
+fun AppRoot(webClient: String) {
 
     val navController: NavHostController = rememberNavController()
 
@@ -42,6 +42,7 @@ fun AppRoot() {
     ) {
         composable<Routes.Login> {
             LoginScreen(
+                webClientId = webClient,
                 onNavigate = {
                     navController.navigate(
                         Routes.Register
@@ -59,6 +60,11 @@ fun AppRoot() {
             RegisterScreen(
                 onBackToLogin = {
                     navController.popBackStack()
+                },
+                onNavigateHome = {
+                    navController.navigate(
+                        Routes.Home
+                    )
                 }
             )
         }
