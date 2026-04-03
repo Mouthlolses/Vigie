@@ -2,6 +2,7 @@ package com.seuvigie.data.remoteDataSource
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.seuvigie.domain.model.User
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -12,8 +13,6 @@ interface AuthRemoteDataSource {
     suspend fun loginWithEmailAndPassword(email: String, password: String): Result<Unit>
 
     fun logout()
-
-    fun getCurrentUser(): String?
 }
 
 
@@ -52,10 +51,6 @@ class AuthRemoteDataSourceImpl @Inject constructor(
 
     override fun logout() {
         firebaseAuth.signOut()
-    }
-
-    override fun getCurrentUser(): String? {
-        return firebaseAuth.currentUser?.uid
     }
 
 }

@@ -1,7 +1,11 @@
 package com.seuvigie.domain.repository
 
+import com.seuvigie.domain.model.User
+
 interface RegisterRepository {
 
-    suspend fun registerUser(email: String, password: String): Result<Unit>
+    suspend fun registerUser(name: String, email: String, password: String): Result<Unit>
+
+    suspend fun getCurrentUser(): Result<User>
 
 }

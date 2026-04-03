@@ -211,6 +211,7 @@ fun RegisterScreen(
                 enabled = isValid,
                 onClick = {
                     viewModel.registerUser(
+                        name = uiState.name,
                         email = uiState.email,
                         password = uiState.password
                     )

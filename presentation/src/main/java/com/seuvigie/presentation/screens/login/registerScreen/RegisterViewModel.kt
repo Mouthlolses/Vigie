@@ -37,12 +37,12 @@ class RegisterViewModel @Inject constructor(
     }
 
 
-    fun registerUser(email: String, password: String) {
+    fun registerUser(name: String, email: String, password: String) {
         viewModelScope.launch {
 
             _uiState.update { it.copy(isLoading = true) }
 
-            val result = registerUserWithEmailAndPassword(email, password)
+            val result = registerUserWithEmailAndPassword(name = name, email, password)
 
             if (result.isSuccess) {
                 _uiState.update {

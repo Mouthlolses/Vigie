@@ -1,6 +1,7 @@
 package com.seuvigie.data.repository
 
 import com.seuvigie.data.remoteDataSource.AuthRemoteDataSource
+import com.seuvigie.domain.model.User
 import com.seuvigie.domain.repository.AuthRepository
 import javax.inject.Inject
 
@@ -22,9 +23,5 @@ class AuthRepositoryImpl @Inject constructor(
 
     override fun logout() {
         remote.logout()
-    }
-
-    override fun getCurrentUser(): String? {
-        return remote.getCurrentUser()
     }
 }
