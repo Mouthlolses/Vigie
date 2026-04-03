@@ -49,9 +49,10 @@ fun AppRoot(webClient: String) {
                     )
                 },
                 onNavigateHome = {
-                    navController.navigate(
-                        Routes.Home
-                    )
+                    navController.navigate(Routes.Home) {
+                        popUpTo(Routes.Login) { inclusive = true }
+                        launchSingleTop = true
+                    }
                 }
             )
         }
@@ -62,9 +63,10 @@ fun AppRoot(webClient: String) {
                     navController.popBackStack()
                 },
                 onNavigateHome = {
-                    navController.navigate(
-                        Routes.Home
-                    )
+                    navController.navigate(Routes.Home) {
+                        popUpTo(Routes.Login) { inclusive = true }
+                        launchSingleTop = true
+                    }
                 }
             )
         }
@@ -75,6 +77,12 @@ fun AppRoot(webClient: String) {
                     navController.navigate(
                         Routes.Details
                     )
+                },
+                onLogout = {
+                    navController.navigate(Routes.Login){
+                        popUpTo(Routes.Home) { inclusive = true }
+                        launchSingleTop = true
+                    }
                 }
             )
         }

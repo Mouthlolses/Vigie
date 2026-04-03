@@ -11,6 +11,9 @@ interface RegisterRemoteDataSource {
     suspend fun registerUser(name: String, email: String, password: String): Result<Unit>
 
     suspend fun getCurrentUser(): Result<User>
+
+    suspend fun saveUserIfNotExists(user: User)
+
 }
 
 
@@ -74,6 +77,20 @@ class RegisterRemoteDataSourceImpl @Inject constructor(
 
         } catch (e: Exception) {
             Result.failure(e)
+        }
+    }
+
+    override suspend fun saveUserIfNotExists(user: User) {
+
+        val doc = firestore.collection("users")
+            .document(user.uid)
+            .get()
+            .await()
+
+        if (!doc.exists()) {
+            firestore.collection("users")
+                .document(user.uid)
+                .set(user)
         }
     }
 }

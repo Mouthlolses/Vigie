@@ -12,11 +12,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -24,9 +26,13 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -45,7 +51,8 @@ import com.seuvigie.presentation.components.ReminderItem
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    onNavigate: () -> Unit = {}
+    onNavigate: () -> Unit,
+    onLogout: () -> Unit
 ) {
 
     val viewModel: HomeViewModel = hiltViewModel()
@@ -61,6 +68,14 @@ fun HomeScreen(
 
             }
         )
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.event.collect { event ->
+            when (event) {
+                LogoutEvent.NavigateToLogin -> onLogout()
+            }
+        }
     }
 
 
@@ -89,98 +104,115 @@ fun HomeScreen(
         }
 
         is HomeUiState.Success -> {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-            ) {
-
-                Column(modifier = Modifier.fillMaxSize()) {
-                    Box(
-                        modifier = Modifier
-                            .weight(0.6f)
-                            .fillMaxWidth()
-                            .background(Color(0xFF5A00D1))
-                    )
-                    Box(
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxWidth()
-                            .background(Color.White)
+            Scaffold(
+                topBar = {
+                    TopAppBar(
+                        title = { Text("") },
+                        navigationIcon = {
+                            IconButton(
+                                onClick = {
+                                    viewModel.logoutUser()
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.ExitToApp,
+                                    contentDescription = "back",
+                                    modifier = Modifier
+                                        .size(26.dp),
+                                    tint = Color.White
+                                )
+                            }
+                        },
+                        colors = TopAppBarDefaults.topAppBarColors(
+                            containerColor = Color.Transparent
+                        )
                     )
                 }
-                Column(
+            ) { _ ->
+                Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(top = 60.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-
-                    Text(
-                        text = "Olá ${(state.data.name)}",
-                        color = Color.White,
-                        fontSize = 26.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-
-                    Spacer(modifier = Modifier.height(56.dp))
-
-                    Card(
-                        shape = RoundedCornerShape(24.dp),
-                        modifier = Modifier
-                            .fillMaxWidth(0.9f)
-                            .heightIn(max = 600.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = Color.White
-                        ),
-                        elevation = CardDefaults.cardElevation(8.dp)
-                    ) {
-                        LazyColumn(
+                    Column(modifier = Modifier.fillMaxSize()) {
+                        Box(
                             modifier = Modifier
-                                .fillMaxSize()
-                                .padding(16.dp)
+                                .weight(0.6f)
+                                .fillMaxWidth()
+                                .background(Color(0xFF5A00D1))
+                        )
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxWidth()
+                                .background(Color.White)
+                        )
+                    }
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(top = 60.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+
+                        Text(
+                            text = "Olá ${(state.data.name)}",
+                            color = Color.White,
+                            fontSize = 26.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+
+                        Spacer(modifier = Modifier.height(56.dp))
+
+                        Card(
+                            shape = RoundedCornerShape(24.dp),
+                            modifier = Modifier
+                                .fillMaxWidth(0.9f)
+                                .heightIn(max = 600.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = Color.White
+                            ),
+                            elevation = CardDefaults.cardElevation(8.dp)
                         ) {
-                            items(20) {
-                                ReminderItem(
-                                    "Extra Item $it",
-                                    it,
-                                    it % 2 == 0,
-                                    onClick = {
-                                        onNavigate()
-                                    },
-                                    rowEnable = true
-                                )
-                                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+                            LazyColumn(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(16.dp)
+                            ) {
+                                items(20) {
+                                    ReminderItem(
+                                        "Extra Item $it",
+                                        it,
+                                        it % 2 == 0,
+                                        onClick = {
+                                            onNavigate()
+                                        },
+                                        rowEnable = true
+                                    )
+                                    HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+                                }
                             }
                         }
-                    }
 
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        FloatingActionButton(
-                            onClick = { openDialog = true },
-                            containerColor = Color(0xFF5A00D1),
-                            shape = CircleShape,
+                        Row(
                             modifier = Modifier
-                                .offset(y = (-24).dp)
+                                .fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
                         ) {
-                            Icon(Icons.Default.Add, contentDescription = "Add", tint = Color.White)
+                            FloatingActionButton(
+                                onClick = { openDialog = true },
+                                containerColor = Color(0xFF5A00D1),
+                                shape = CircleShape,
+                                modifier = Modifier
+                                    .offset(y = (-24).dp)
+                            ) {
+                                Icon(
+                                    Icons.Default.Add,
+                                    contentDescription = "Add",
+                                    tint = Color.White
+                                )
+                            }
                         }
-                    }
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.Bottom
-                    ) {
-                        Text(
-                            text = "Versão 1.0.0 (Build 1)",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
                     }
                 }
             }

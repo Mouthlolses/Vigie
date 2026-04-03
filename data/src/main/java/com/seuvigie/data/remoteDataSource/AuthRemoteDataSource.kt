@@ -1,5 +1,6 @@
 package com.seuvigie.data.remoteDataSource
 
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.seuvigie.domain.model.User
@@ -8,27 +9,36 @@ import javax.inject.Inject
 
 interface AuthRemoteDataSource {
 
-    suspend fun loginWithGoogle(idToken: String): Result<Unit>
+    suspend fun loginWithGoogle(idToken: String): Result<User>
 
     suspend fun loginWithEmailAndPassword(email: String, password: String): Result<Unit>
 
-    fun logout()
+    suspend fun logout(): Result<Unit>
 }
 
 
 class AuthRemoteDataSourceImpl @Inject constructor(
-    private val firebaseAuth: FirebaseAuth
+    private val firebaseAuth: FirebaseAuth,
+    private val googleSignInClient: GoogleSignInClient
 ) : AuthRemoteDataSource {
 
-    override suspend fun loginWithGoogle(idToken: String): Result<Unit> {
+    override suspend fun loginWithGoogle(idToken: String): Result<User> {
         return try {
             val credential = GoogleAuthProvider.getCredential(idToken, null)
 
-            firebaseAuth
+            val authResult = firebaseAuth
                 .signInWithCredential(credential)
                 .await()
 
-            Result.success(Unit)
+            val firebaseUser = authResult.user
+
+            val user = User(
+                uid = firebaseUser?.uid ?: "",
+                name = firebaseUser?.displayName ?: "",
+                email = firebaseUser?.email ?: ""
+            )
+
+            Result.success(user)
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -49,8 +59,17 @@ class AuthRemoteDataSourceImpl @Inject constructor(
         }
     }
 
-    override fun logout() {
-        firebaseAuth.signOut()
+    override suspend fun logout(): Result<Unit> {
+        return try {
+
+            firebaseAuth.signOut()
+            googleSignInClient.signOut().await()
+
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+
+        }
     }
 
 }

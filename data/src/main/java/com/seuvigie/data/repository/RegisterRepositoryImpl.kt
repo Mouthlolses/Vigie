@@ -25,4 +25,8 @@ class RegisterRepositoryImpl @Inject constructor(
         return registerRemoteDataSource.getCurrentUser()
     }
 
+    override suspend fun saveUserIfNotExists(user: User) {
+        registerRemoteDataSource.saveUserIfNotExists(user)
+    }
+
 }

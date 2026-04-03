@@ -1,10 +1,12 @@
 package com.seuvigie.domain.repository
 
+import com.seuvigie.domain.model.User
+
 interface AuthRepository {
 
-    suspend fun loginWithGoogle(idToken: String): Result<Unit>
+    suspend fun loginWithGoogle(idToken: String): Result<User>
 
     suspend fun loginWithEmailAndPassword(email: String, password: String): Result<Unit>
 
-    fun logout()
+    suspend fun logout() : Result<Unit>
 }

@@ -1,6 +1,9 @@
 package com.seuvigie.data.di
 
 import android.content.Context
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -29,7 +32,7 @@ object FirebaseModule {
     @Singleton
     fun provideFirebaseAuth(
         firebaseApp: FirebaseApp
-    ) : FirebaseAuth {
+    ): FirebaseAuth {
         return FirebaseAuth.getInstance(firebaseApp)
     }
 
@@ -39,4 +42,17 @@ object FirebaseModule {
         return FirebaseFirestore.getInstance()
     }
 
+    @Provides
+    @Singleton
+    fun provideGoogleSignInClient(
+        @ApplicationContext context: Context
+    ): GoogleSignInClient {
+
+        val options = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken("SEU_WEB_CLIENT_ID")
+            .requestEmail()
+            .build()
+
+        return GoogleSignIn.getClient(context, options)
+    }
 }

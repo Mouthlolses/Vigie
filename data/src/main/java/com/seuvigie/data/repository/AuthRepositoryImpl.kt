@@ -10,7 +10,7 @@ class AuthRepositoryImpl @Inject constructor(
     private val remote: AuthRemoteDataSource
 ) : AuthRepository {
 
-    override suspend fun loginWithGoogle(idToken: String): Result<Unit> {
+    override suspend fun loginWithGoogle(idToken: String): Result<User> {
         return remote.loginWithGoogle(idToken)
     }
 
@@ -21,7 +21,8 @@ class AuthRepositoryImpl @Inject constructor(
         return remote.loginWithEmailAndPassword(email, password)
     }
 
-    override fun logout() {
-        remote.logout()
+    override suspend fun logout(): Result<Unit> {
+        return remote.logout()
     }
+
 }

@@ -24,6 +24,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -36,7 +37,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
@@ -69,9 +69,11 @@ fun LoginScreen(
     var passwordVisible by remember { mutableStateOf(false) }
 
 
-    LaunchedEffect(uiState.isSuccess) {
-        if (uiState.isSuccess) {
-            onNavigateHome()
+    LaunchedEffect(Unit) {
+        viewModel.event.collect { event ->
+            when (event) {
+                LoginEvent.NavigateToHome -> onNavigateHome()
+            }
         }
     }
 
@@ -252,6 +254,19 @@ fun LoginScreen(
             )
         }
 
-        Spacer(modifier = Modifier.height(180.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.Bottom
+        ) {
+            Text(
+                text = "Versão 1.0.0 (Build 1)",
+                style = MaterialTheme.typography.labelSmall,
+                color = Color.White.copy(0.4f)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(160.dp))
     }
 }

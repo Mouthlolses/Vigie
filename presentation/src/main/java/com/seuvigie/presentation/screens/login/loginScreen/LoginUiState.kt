@@ -7,3 +7,8 @@ data class LoginUiState(
     val isSuccess: Boolean = false,
     val errorMessage: String? = null
 )
+
+
+sealed class LoginEvent {
+    data object NavigateToHome : LoginEvent()
+}

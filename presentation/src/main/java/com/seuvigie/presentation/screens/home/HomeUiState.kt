@@ -10,3 +10,10 @@ sealed class HomeUiState {
 
     data class Error(val message: String) : HomeUiState()
 }
+
+
+sealed class LogoutEvent {
+
+    data object NavigateToLogin : LogoutEvent()
+
+}

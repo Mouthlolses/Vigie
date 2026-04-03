@@ -8,4 +8,7 @@ interface RegisterRepository {
 
     suspend fun getCurrentUser(): Result<User>
 
+
+    suspend fun saveUserIfNotExists(user: User)
+
 }
