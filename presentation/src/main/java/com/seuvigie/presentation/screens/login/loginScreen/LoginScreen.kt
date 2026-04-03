@@ -34,13 +34,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -129,23 +127,14 @@ fun LoginScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        Spacer(modifier = Modifier.height(76.dp))
-        Text(
-            text = "Vigie",
-            fontSize = 42.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.White,
-            style = TextStyle(
-                shadow = Shadow(
-                    color = Color.Black,
-                    offset = Offset(2f, 2f),
-                    blurRadius = 6f
-                )
-            )
+        Spacer(modifier = Modifier.height(56.dp))
+
+        Image(
+            painter = painterResource(R.drawable.vigie_logo_melhorada_semfundo),
+            contentDescription = "logo",
+            modifier = Modifier
+                .size(180.dp)
         )
-
-        Spacer(modifier = Modifier.padding(vertical = 38.dp))
-
 
         LoginTextField(
             value = uiState.email,
@@ -200,7 +189,6 @@ fun LoginScreen(
             loading = uiState.isLoading
         )
 
-        Spacer(modifier = Modifier.height(2.dp))
 
         Text(
             text = "Ou",
@@ -209,8 +197,6 @@ fun LoginScreen(
             fontSize = 14.sp
         )
 
-
-        Spacer(modifier = Modifier.height(2.dp))
 
         Button(
             onClick = {

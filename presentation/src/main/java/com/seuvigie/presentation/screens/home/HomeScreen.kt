@@ -81,7 +81,8 @@ fun HomeScreen(
         is HomeUiState.Error -> {
             Box(
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
             ) {
                 Text(text = state.message)
             }
