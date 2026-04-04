@@ -4,8 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.seuvigie.domain.usecase.RegisterUserWithEmailAndPasswordUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -18,6 +21,10 @@ class RegisterViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(RegisterUiState())
     val uiState: StateFlow<RegisterUiState> = _uiState.asStateFlow()
+
+
+    private val _event = MutableSharedFlow<RegisterEvent>()
+    val event: SharedFlow<RegisterEvent> = _event.asSharedFlow()
 
 
     fun updateName(name: String) {
@@ -44,23 +51,34 @@ class RegisterViewModel @Inject constructor(
 
             val result = registerUserWithEmailAndPassword(name = name, email, password)
 
-            if (result.isSuccess) {
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        isSuccess = true,
-                        errorMessage = null
+            result.fold(
+                onSuccess = {
+                    _uiState.update {
+
+                        it.copy(
+                            isLoading = false,
+                            isSuccess = true
+                        )
+                    }
+
+                    _event.emit(
+                        RegisterEvent.NavigateToHome
+                    )
+                },
+                onFailure = {
+                    _uiState.update {
+
+                        it.copy(
+                            isLoading = false,
+                            isSuccess = false,
+                        )
+                    }
+
+                    _event.emit(
+                        RegisterEvent.ShowErrorMessage(result.exceptionOrNull()?.message)
                     )
                 }
-            } else {
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        isSuccess = false,
-                        errorMessage = result.exceptionOrNull()?.message
-                    )
-                }
-            }
+            )
         }
     }
 }

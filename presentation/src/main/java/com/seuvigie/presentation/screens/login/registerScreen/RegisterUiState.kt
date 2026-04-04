@@ -9,3 +9,11 @@ data class RegisterUiState(
     val isSuccess: Boolean = false,
     val errorMessage: String? = null
 )
+
+
+sealed class RegisterEvent {
+
+    data object NavigateToHome : RegisterEvent()
+    data class ShowErrorMessage(val errorMessage: String?) : RegisterEvent()
+
+}

@@ -17,6 +17,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -55,6 +57,8 @@ fun RegisterScreen(
     val viewModel: RegisterViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsState()
 
+    val snackBarState = remember { SnackbarHostState() }
+
     var passwordVisible by remember { mutableStateOf(false) }
 
 
@@ -62,9 +66,18 @@ fun RegisterScreen(
             uiState.email.contains("@") &&
             uiState.password.length >= 6
 
-    LaunchedEffect(uiState.isSuccess) {
-        if (uiState.isSuccess) {
-            onNavigateHome()
+    LaunchedEffect(Unit) {
+        viewModel.event.collect { event ->
+            when (event) {
+
+                is RegisterEvent.NavigateToHome -> {
+                    onNavigateHome()
+                }
+
+                is RegisterEvent.ShowErrorMessage -> {
+                    snackBarState.showSnackbar(event.errorMessage ?: "Erro desconhecido")
+                }
+            }
         }
     }
 
@@ -91,6 +104,9 @@ fun RegisterScreen(
                     containerColor = Color.Transparent
                 )
             )
+        },
+        snackbarHost = {
+            SnackbarHost(hostState = snackBarState)
         }
     ) { _ ->
         Column(
