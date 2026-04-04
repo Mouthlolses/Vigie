@@ -8,6 +8,7 @@ import com.seuvigie.domain.usecase.SaveUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -29,7 +30,7 @@ class LoginViewModel @Inject constructor(
 
     //Event
     private val _event = MutableSharedFlow<LoginEvent>()
-    val event = _event.asSharedFlow()
+    val event: SharedFlow<LoginEvent> = _event.asSharedFlow()
 
 
     fun updateEmail(email: String) {
@@ -41,63 +42,83 @@ class LoginViewModel @Inject constructor(
     }
 
     fun loginWithEmailAndPassword(email: String, password: String) {
+        viewModelScope.launch {
+            try {
+                if (email.isEmpty() || password.isEmpty()) {
+                    _event.emit(
+                        LoginEvent.ShowErrorMessage(
+                            errorMessage = "Ops! Você esqueceu de preencher algum campo"
+                        )
+                    )
+                    return@launch
+                }
 
-        if (email.isEmpty() || password.isEmpty()) {
-            _uiState.update {
-                it.copy(
-                    errorMessage = "Ops! Você esqueceu de preencher algum campo"
+                _uiState.update { it.copy(isLoading = true) }
+
+                val result = loginWithEmailUseCase(email, password)
+
+                result.fold(
+                    onSuccess = {
+                        _uiState.update { it.copy(isLoading = false, isSuccess = true) }
+
+                        _event.emit(LoginEvent.NavigateToHome)
+                    },
+                    onFailure = {
+                        _uiState.update { it.copy(isLoading = false) }
+
+                        _event.emit(
+                            LoginEvent.ShowErrorMessage(
+                                result.exceptionOrNull()?.message ?: "Erro desconhecido"
+                            )
+                        )
+                    }
+                )
+            } catch (e: Exception) {
+                _uiState.update { it.copy(isLoading = false) }
+
+                _event.emit(
+                    LoginEvent.ShowErrorMessage("Erro: ${e.message}")
                 )
             }
-            return
-        }
-
-        viewModelScope.launch {
-
-            _uiState.update { it.copy(isLoading = true, errorMessage = null) }
-
-            val result = loginWithEmailUseCase(email, password)
-
-            if (result.isSuccess) {
-                _uiState.update { it.copy(isLoading = false, isSuccess = true) }
-
-                _event.emit(LoginEvent.NavigateToHome)
-
-            } else {
-                _uiState.update { it.copy(isLoading = false) }
-            }
-
         }
     }
 
     fun loginWithGoogle(idToken: String) {
         viewModelScope.launch {
+            try {
 
-            _uiState.update { it.copy(isLoading = true, errorMessage = null) }
+                _uiState.update { it.copy(isLoading = true) }
 
-            val result = loginWithGoogleUseCase(idToken)
+                val result = loginWithGoogleUseCase(idToken)
 
-            if (result.isSuccess) {
+                result.fold(
+                    onSuccess = {
+                        val user = result.getOrNull()
 
-                val user = result.getOrNull()
+                        user?.let {
+                            saveUserUseCase(it)
+                        }
 
-                user?.let {
-                    saveUserUseCase(it)
-                }
+                        _uiState.update {
+                            it.copy(isLoading = false, isSuccess = true)
+                        }
 
-                _uiState.update {
-                    it.copy(isLoading = false, isSuccess = true)
-                }
-
-                _event.emit(LoginEvent.NavigateToHome)
-            } else {
-
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        isSuccess = false,
-                        errorMessage = "Erro ao logar com Google"
-                    )
-                }
+                        _event.emit(LoginEvent.NavigateToHome)
+                    },
+                    onFailure = {
+                        _uiState.update { it.copy(isLoading = false, isSuccess = false) }
+                        _event.emit(
+                            LoginEvent.ShowErrorMessage(
+                                result.exceptionOrNull()?.message ?: "Erro desconhecido"
+                            )
+                        )
+                    }
+                )
+            } catch (e: Exception) {
+                _uiState.update { it.copy(isLoading = false, isSuccess = false) }
+                _event.emit(
+                    LoginEvent.ShowErrorMessage("Erro: ${e.message}")
+                )
             }
         }
     }
