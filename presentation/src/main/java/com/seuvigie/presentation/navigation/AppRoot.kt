@@ -12,6 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.seuvigie.presentation.navigation.routes.Routes
 import com.seuvigie.presentation.screens.home.HomeScreen
+import com.seuvigie.presentation.screens.home.createBill.CreateBillScreen
 import com.seuvigie.presentation.screens.home.detail.DetailScreen
 import com.seuvigie.presentation.screens.login.loginScreen.LoginScreen
 import com.seuvigie.presentation.screens.login.registerScreen.RegisterScreen
@@ -78,12 +79,17 @@ fun AppRoot(webClient: String) {
                         Routes.Details
                     )
                 },
+                onNavigateToCreationBill = {
+                    navController.navigate(
+                        Routes.CreateBill
+                    )
+                },
                 onLogout = {
-                    navController.navigate(Routes.Login){
+                    navController.navigate(Routes.Login) {
                         popUpTo(Routes.Home) { inclusive = true }
                         launchSingleTop = true
                     }
-                }
+                },
             )
         }
 
@@ -92,6 +98,12 @@ fun AppRoot(webClient: String) {
                 onBackHomeScreen = {
                     navController.popBackStack()
                 }
+            )
+        }
+
+        composable<Routes.CreateBill> {
+            CreateBillScreen(
+
             )
         }
     }

@@ -45,7 +45,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.seuvigie.presentation.R
 import com.seuvigie.presentation.components.LoginButton
-import com.seuvigie.presentation.components.LoginTextField
+import com.seuvigie.presentation.components.CustomTextField
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -145,7 +145,7 @@ fun RegisterScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             // Nome
-            LoginTextField(
+            CustomTextField(
                 value = uiState.name,
                 onValueChange = { viewModel.updateName(it) },
                 placeholder = "Nome",
@@ -153,14 +153,14 @@ fun RegisterScreen(
             )
 
             // Email
-            LoginTextField(
+            CustomTextField(
                 value = uiState.email,
                 onValueChange = { viewModel.updateEmail(it) },
                 placeholder = "Email"
             )
 
             // Senha
-            LoginTextField(
+            CustomTextField(
                 value = uiState.password,
                 onValueChange = { viewModel.updatePassword(it) },
                 placeholder = "Password",
@@ -190,7 +190,7 @@ fun RegisterScreen(
                 }
             )
 
-            LoginTextField(
+            CustomTextField(
                 value = uiState.confirmPassword,
                 onValueChange = { viewModel.updateConfirmPassword(it) },
                 placeholder = "Confirm Password",

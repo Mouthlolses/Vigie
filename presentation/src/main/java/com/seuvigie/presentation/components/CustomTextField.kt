@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 
 @Preview
 @Composable
-fun LoginTextField(
+fun CustomTextField(
     value: String = "",
     onValueChange: (String) -> Unit = {},
     placeholder: String = "",

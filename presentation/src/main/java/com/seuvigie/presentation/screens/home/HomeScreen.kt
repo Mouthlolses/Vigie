@@ -48,6 +48,7 @@ import com.seuvigie.presentation.components.ReminderItem
 @Composable
 fun HomeScreen(
     onNavigate: () -> Unit,
+    onNavigateToCreationBill: () -> Unit,
     onLogout: () -> Unit
 ) {
 
@@ -185,7 +186,7 @@ fun HomeScreen(
                         ) {
                             FloatingActionButton(
                                 onClick = {
-
+                                    onNavigateToCreationBill()
                                 },
                                 containerColor = Color(0xFF5A00D1),
                                 shape = CircleShape,

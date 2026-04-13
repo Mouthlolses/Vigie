@@ -54,7 +54,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.seuvigie.presentation.R
 import com.seuvigie.presentation.components.LoginButton
-import com.seuvigie.presentation.components.LoginTextField
+import com.seuvigie.presentation.components.CustomTextField
 
 
 @Composable
@@ -157,13 +157,13 @@ fun LoginScreen(
                     .size(180.dp)
             )
 
-            LoginTextField(
+            CustomTextField(
                 value = uiState.email,
                 onValueChange = { viewModel.updateEmail(it) },
                 placeholder = "Email"
             )
 
-            LoginTextField(
+            CustomTextField(
                 value = uiState.password,
                 onValueChange = { viewModel.updatePassword(it) },
                 placeholder = "Password",
@@ -195,6 +195,7 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(2.dp))
 
             LoginButton(
+                text = "Vamos lá",
                 onClick = {
                     viewModel.loginWithEmailAndPassword(
                         email = uiState.email,

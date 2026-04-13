@@ -16,17 +16,14 @@ sealed class Routes {
 
     @Serializable
     data object Home : Routes()
+
     @Serializable
     data object Details : Routes()
 
 
-//    @Serializable
-//    data class CategoryDetail(
-//        val categoryId: String,
-//        val categoryColor: Long = 0XFF034d58
-//    ) : Routes()
-//
-//    @Serializable
-//    data class Game(val categoryId: String) : Routes()
+    @Serializable
+    data object CreateBill : Routes() {
+
+    }
 
 }
