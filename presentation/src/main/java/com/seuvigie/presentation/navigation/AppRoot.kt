@@ -103,7 +103,11 @@ fun AppRoot(webClient: String) {
 
         composable<Routes.CreateBill> {
             CreateBillScreen(
-
+                navigateToHome = {
+                    navController.navigate(Routes.Home){
+                        popUpTo(Routes.CreateBill)
+                    }
+                }
             )
         }
     }

@@ -44,7 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.seuvigie.presentation.R
-import com.seuvigie.presentation.components.LoginButton
+import com.seuvigie.presentation.components.CustomButton
 import com.seuvigie.presentation.components.CustomTextField
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -222,7 +222,7 @@ fun RegisterScreen(
 
             Spacer(modifier = Modifier.height(28.dp))
 
-            LoginButton(
+            CustomButton(
                 text = "Cadastrar",
                 enabled = isValid,
                 onClick = {

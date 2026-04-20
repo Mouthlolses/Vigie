@@ -2,6 +2,7 @@ package com.seuvigie.data.remoteDataSource
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.seuvigie.domain.model.Bill
 import com.seuvigie.domain.model.User
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -9,6 +10,8 @@ import javax.inject.Inject
 interface RegisterRemoteDataSource {
 
     suspend fun registerUser(name: String, email: String, password: String): Result<Unit>
+
+    suspend fun registerBill(bill: Bill): Result<Bill>
 
     suspend fun getCurrentUser(): Result<User>
 
@@ -59,22 +62,46 @@ class RegisterRemoteDataSourceImpl @Inject constructor(
         }
     }
 
+    override suspend fun registerBill(bill: Bill): Result<Bill> {
+        return try {
+
+            val uid = firebaseAuth.currentUser?.uid
+                ?: return Result.failure(Exception("Usuário não autenticado"))
+
+            firestore
+                .collection("users")
+                .document(uid)
+                .collection("bills")
+                .add(bill)
+                .await()
+
+            Result.success(bill)
+
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     override suspend fun getCurrentUser(): Result<User> {
         return try {
 
             val uid = firebaseAuth.currentUser?.uid
                 ?: return Result.failure(Exception("Usuário não autenticado"))
 
-
-            return firestore
+            val snapshot = firestore
                 .collection("users")
                 .document(uid)
                 .get()
                 .await()
-                .toObject(User::class.java)
-                ?.let { Result.success(it) }
-                ?: Result.failure(Exception("Usuário não encontrado"))
 
+            if (!snapshot.exists()) {
+                return Result.failure(Exception("Usuário não encontrado"))
+            }
+
+            val user = snapshot.toObject(User::class.java)
+                ?: return Result.failure(Exception("Erro ao converter usuário"))
+
+            Result.success(user)
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -88,7 +115,8 @@ class RegisterRemoteDataSourceImpl @Inject constructor(
             .await()
 
         if (!doc.exists()) {
-            firestore.collection("users")
+            firestore
+                .collection("users")
                 .document(user.uid)
                 .set(user)
         }

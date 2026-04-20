@@ -1,6 +1,7 @@
 package com.seuvigie.data.repository
 
 import com.seuvigie.data.remoteDataSource.RegisterRemoteDataSource
+import com.seuvigie.domain.model.Bill
 import com.seuvigie.domain.model.User
 import com.seuvigie.domain.repository.RegisterRepository
 import javax.inject.Inject
@@ -23,6 +24,10 @@ class RegisterRepositoryImpl @Inject constructor(
 
     override suspend fun getCurrentUser(): Result<User> {
         return registerRemoteDataSource.getCurrentUser()
+    }
+
+    override suspend fun registerBill(bill: Bill): Result<Bill> {
+        return registerRemoteDataSource.registerBill(bill)
     }
 
     override suspend fun saveUserIfNotExists(user: User) {

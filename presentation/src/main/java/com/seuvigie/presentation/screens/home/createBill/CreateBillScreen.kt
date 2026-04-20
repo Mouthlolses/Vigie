@@ -14,7 +14,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -30,6 +29,9 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,31 +43,52 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.seuvigie.domain.model.AccountType
+import com.seuvigie.domain.model.Bill
+import com.seuvigie.domain.model.RecurrenceType
 import com.seuvigie.presentation.R
-import com.seuvigie.presentation.components.LoginButton
+import com.seuvigie.presentation.components.CustomButton
 import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview(showBackground = true)
 @Composable
-fun CreateBillScreen() {
+fun CreateBillScreen(
+    navigateToHome: () -> Unit
+) {
+
+    val viewModel: CreateBillViewModel = hiltViewModel()
+    val uiState by viewModel.uiState.collectAsState()
 
     val snackBarHostState = remember { SnackbarHostState() }
 
-    val contasSelecionadas = remember { mutableStateListOf<String>() }
-    val recorrenciaSelecionada = remember { mutableStateOf("Mês") }
+    val recurrents = RecurrenceType.entries
+    val recurrencyType = remember { mutableStateOf(uiState.recurrenceType?.name) }
 
-    val valor = remember { mutableStateOf("") }
-    val descricao = remember { mutableStateOf("") }
-    val dataVencimento = remember { mutableStateOf("") }
 
-    val tiposConta = listOf("Luz", "Água", "Internet")
-    val recorrencias = listOf("Dia", "Mês", "Ano")
+    val accountTypes = AccountType.entries
+    val accountSelection = remember { mutableStateListOf(uiState.accountTypes) }
+
+    val dataVencimento = remember { mutableStateOf(uiState.expirationDate) }
+
 
     val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                is CreateBillEvent.NavigateToHome -> {
+                    navigateToHome()
+                }
+
+                is CreateBillEvent.ShowErrorMessage -> {
+                    snackBarHostState.showSnackbar(event.errorMessage ?: "Erro desconhecido")
+                }
+            }
+        }
+    }
 
 
     Scaffold(
@@ -137,54 +160,56 @@ fun CreateBillScreen() {
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
 
-                    // -------------------------
-                    // TIPOS DE CONTA
-                    // -------------------------
+                    Text(text = "Titulo")
+
+                    OutlinedTextField(
+                        value = uiState.title,
+                        onValueChange = { viewModel.updateTitle(it) },
+                        label = { Text("Descrição (opcional)") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
                     Text("Tipo de Conta", color = Color.White)
 
-                    tiposConta.forEach { tipo ->
+                    accountTypes.forEach { tip ->
                         Row(verticalAlignment = Alignment.CenterVertically) {
 
                             Checkbox(
-                                checked = contasSelecionadas.contains(tipo),
+                                checked = accountSelection.contains(tip),
                                 onCheckedChange = { checked ->
                                     if (checked) {
-                                        contasSelecionadas.add(tipo)
+                                        accountSelection.add(tip)
                                     } else {
-                                        contasSelecionadas.remove(tipo)
+                                        accountSelection.remove(tip)
                                     }
                                 }
                             )
 
-                            Text(tipo, color = Color.White)
+                            Text(text = tip.name, color = Color.White)
                         }
                     }
 
-                    // -------------------------
-                    // RECORRENCIA
-                    // -------------------------
+
                     Text("Recorrência", color = Color.White)
 
-                    recorrencias.forEach { rec ->
+                    recurrents.forEach { rec ->
                         Row(verticalAlignment = Alignment.CenterVertically) {
 
                             RadioButton(
-                                selected = recorrenciaSelecionada.value == rec,
+                                selected = recurrencyType.value == rec.name,
                                 onClick = {
-                                    recorrenciaSelecionada.value = rec
+                                    recurrencyType.value = rec.name
                                 }
                             )
 
-                            Text(rec, color = Color.White)
+                            Text(rec.name, color = Color.White)
                         }
                     }
 
-                    // -------------------------
-                    // VALOR
-                    // -------------------------
+
                     OutlinedTextField(
-                        value = valor.value,
-                        onValueChange = { valor.value = it },
+                        value = uiState.value,
+                        onValueChange = { viewModel.updateValue(it) },
                         label = { Text("Valor (R$)") },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
@@ -193,12 +218,10 @@ fun CreateBillScreen() {
                         )
                     )
 
-                    // -------------------------
-                    // DATA DE VENCIMENTO
-                    // -------------------------
+
                     OutlinedTextField(
-                        value = dataVencimento.value,
-                        onValueChange = {},
+                        value = uiState.expirationDate,
+                        onValueChange = { viewModel.updateExpirationDate(it) },
                         label = { Text("Data de vencimento") },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -221,41 +244,25 @@ fun CreateBillScreen() {
                         enabled = false
                     )
 
-                    // -------------------------
-                    // DESCRIÇÃO
-                    // -------------------------
                     OutlinedTextField(
-                        value = descricao.value,
-                        onValueChange = { descricao.value = it },
+                        value = uiState.description,
+                        onValueChange = { viewModel.updateDescription(it) },
                         label = { Text("Descrição (opcional)") },
                         modifier = Modifier.fillMaxWidth()
                     )
 
-                    // -------------------------
-                    // BOTÃO
-                    // -------------------------
-                    LoginButton(
+                    CustomButton(
                         text = "Salvar",
                         onClick = {
-
-                            when {
-                                contasSelecionadas.isEmpty() -> {
-                                    // erro
-                                }
-
-                                valor.value.isBlank() -> {
-                                    // erro
-                                }
-
-                                dataVencimento.value.isBlank() -> {
-                                    // erro
-                                }
-
-                                else -> {
-                                    // sucesso → salvar no banco
-                                }
-                            }
-
+                            viewModel.createBill(
+                                bill = Bill(
+                                    title = uiState.title,
+                                    description = uiState.description,
+                                    expirationDate = uiState.expirationDate,
+                                    accountTypes = uiState.accountTypes,
+                                    recurrenceType = uiState.recurrenceType
+                                )
+                            )
                         },
                         loading = false
                     )

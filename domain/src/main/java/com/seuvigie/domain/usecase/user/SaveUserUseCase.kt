@@ -1,4 +1,4 @@
-package com.seuvigie.domain.usecase
+package com.seuvigie.domain.usecase.user
 
 import com.seuvigie.domain.model.User
 import com.seuvigie.domain.repository.RegisterRepository

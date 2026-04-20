@@ -53,8 +53,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.seuvigie.presentation.R
-import com.seuvigie.presentation.components.LoginButton
 import com.seuvigie.presentation.components.CustomTextField
+import com.seuvigie.presentation.components.CustomButton
 
 
 @Composable
@@ -194,7 +194,7 @@ fun LoginScreen(
             )
             Spacer(modifier = Modifier.height(2.dp))
 
-            LoginButton(
+            CustomButton(
                 text = "Vamos lá",
                 onClick = {
                     viewModel.loginWithEmailAndPassword(

@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.sp
 
 @Preview
 @Composable
-fun LoginButton(
+fun CustomButton(
     text: String = "Vamos lá",
     enabled: Boolean = true,
     onClick: () -> Unit = {},

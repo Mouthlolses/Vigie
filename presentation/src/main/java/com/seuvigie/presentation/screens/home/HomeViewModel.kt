@@ -2,8 +2,8 @@ package com.seuvigie.presentation.screens.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.seuvigie.domain.usecase.GetCurrentUserDataUseCase
-import com.seuvigie.domain.usecase.UserLogoutUseCase
+import com.seuvigie.domain.usecase.user.GetCurrentUserDataUseCase
+import com.seuvigie.domain.usecase.user.UserLogoutUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow

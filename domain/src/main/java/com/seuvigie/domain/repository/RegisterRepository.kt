@@ -1,5 +1,6 @@
 package com.seuvigie.domain.repository
 
+import com.seuvigie.domain.model.Bill
 import com.seuvigie.domain.model.User
 
 interface RegisterRepository {
@@ -8,6 +9,7 @@ interface RegisterRepository {
 
     suspend fun getCurrentUser(): Result<User>
 
+    suspend fun registerBill(bill: Bill): Result<Bill>
 
     suspend fun saveUserIfNotExists(user: User)
 

@@ -2,9 +2,9 @@ package com.seuvigie.presentation.screens.login.loginScreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.seuvigie.domain.usecase.LoginWithEmailUseCase
-import com.seuvigie.domain.usecase.LoginWithGoogleUseCase
-import com.seuvigie.domain.usecase.SaveUserUseCase
+import com.seuvigie.domain.usecase.user.LoginWithEmailUseCase
+import com.seuvigie.domain.usecase.user.LoginWithGoogleUseCase
+import com.seuvigie.domain.usecase.user.SaveUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
