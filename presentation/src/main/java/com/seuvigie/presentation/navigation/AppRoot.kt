@@ -6,6 +6,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -22,10 +23,18 @@ import kotlinx.serialization.ExperimentalSerializationApi
 @Composable
 fun AppRoot(webClient: String) {
 
+    val viewmodel: AppViewModel = hiltViewModel()
+
     val navController: NavHostController = rememberNavController()
 
+    val startDestination = if (viewmodel.isUserLogged()) {
+        Routes.Home
+    } else {
+        Routes.Login
+    }
+
     NavHost(
-        startDestination = Routes.Login,
+        startDestination = startDestination,
         navController = navController,
         enterTransition = {
             slideIntoContainer(
@@ -104,12 +113,16 @@ fun AppRoot(webClient: String) {
         composable<Routes.CreateBill> {
             CreateBillScreen(
                 navigateToHome = {
-                    navController.navigate(Routes.Home){
+                    navController.navigate(Routes.Home) {
                         popUpTo(Routes.CreateBill)
                     }
+                },
+                onBackHomeScreen = {
+                    navController.popBackStack()
                 }
             )
         }
     }
 }
+
 

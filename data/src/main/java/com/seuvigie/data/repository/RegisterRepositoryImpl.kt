@@ -22,9 +22,6 @@ class RegisterRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun getCurrentUser(): Result<User> {
-        return registerRemoteDataSource.getCurrentUser()
-    }
 
     override suspend fun registerBill(bill: Bill): Result<Bill> {
         return registerRemoteDataSource.registerBill(bill)

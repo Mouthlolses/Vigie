@@ -21,6 +21,14 @@ class AuthRepositoryImpl @Inject constructor(
         return remote.loginWithEmailAndPassword(email, password)
     }
 
+    override suspend fun getCurrentUser(): Result<User> {
+        return remote.getCurrentUser()
+    }
+
+    override fun isUserLogged(): Boolean {
+        return remote.isUserLogged()
+    }
+
     override suspend fun logout(): Result<Unit> {
         return remote.logout()
     }

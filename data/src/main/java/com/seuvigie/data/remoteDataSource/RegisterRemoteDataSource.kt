@@ -13,8 +13,6 @@ interface RegisterRemoteDataSource {
 
     suspend fun registerBill(bill: Bill): Result<Bill>
 
-    suspend fun getCurrentUser(): Result<User>
-
     suspend fun saveUserIfNotExists(user: User)
 
 }
@@ -82,30 +80,6 @@ class RegisterRemoteDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun getCurrentUser(): Result<User> {
-        return try {
-
-            val uid = firebaseAuth.currentUser?.uid
-                ?: return Result.failure(Exception("Usuário não autenticado"))
-
-            val snapshot = firestore
-                .collection("users")
-                .document(uid)
-                .get()
-                .await()
-
-            if (!snapshot.exists()) {
-                return Result.failure(Exception("Usuário não encontrado"))
-            }
-
-            val user = snapshot.toObject(User::class.java)
-                ?: return Result.failure(Exception("Erro ao converter usuário"))
-
-            Result.success(user)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
 
     override suspend fun saveUserIfNotExists(user: User) {
 

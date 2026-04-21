@@ -56,7 +56,8 @@ import java.util.Calendar
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateBillScreen(
-    navigateToHome: () -> Unit
+    navigateToHome: () -> Unit,
+    onBackHomeScreen: () -> Unit
 ) {
 
     val viewModel: CreateBillViewModel = hiltViewModel()
@@ -105,7 +106,7 @@ fun CreateBillScreen(
                 navigationIcon = {
                     IconButton(
                         onClick = {
-
+                            onBackHomeScreen()
                         }
                     ) {
                         Icon(

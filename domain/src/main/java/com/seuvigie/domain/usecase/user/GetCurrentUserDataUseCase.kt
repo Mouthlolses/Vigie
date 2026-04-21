@@ -1,14 +1,14 @@
 package com.seuvigie.domain.usecase.user
 
 import com.seuvigie.domain.model.User
-import com.seuvigie.domain.repository.RegisterRepository
+import com.seuvigie.domain.repository.AuthRepository
 import javax.inject.Inject
 
 class GetCurrentUserDataUseCase @Inject constructor(
-    private val repository: RegisterRepository
+    private val authRepository: AuthRepository
 ) {
 
     suspend operator fun invoke(): Result<User> {
-        return repository.getCurrentUser()
+        return authRepository.getCurrentUser()
     }
 }
