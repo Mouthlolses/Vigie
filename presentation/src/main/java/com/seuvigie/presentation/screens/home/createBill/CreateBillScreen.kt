@@ -14,6 +14,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -21,7 +25,6 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -49,6 +52,7 @@ import com.seuvigie.domain.model.Bill
 import com.seuvigie.domain.model.RecurrenceType
 import com.seuvigie.presentation.R
 import com.seuvigie.presentation.components.CustomButton
+import com.seuvigie.presentation.components.CustomTextField
 import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -154,13 +158,11 @@ fun CreateBillScreen(
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
 
-                    Text(text = "Titulo")
-
-                    OutlinedTextField(
+                    CustomTextField(
                         value = uiState.title,
                         onValueChange = { viewModel.updateTitle(it) },
-                        label = { Text("Descrição (opcional)") },
-                        modifier = Modifier.fillMaxWidth()
+                        placeholder = "Título",
+                        icon = Icons.Default.Edit
                     )
 
                     Text("Tipo de Conta", color = Color.White)
@@ -197,24 +199,23 @@ fun CreateBillScreen(
                     }
 
 
-                    OutlinedTextField(
+                    CustomTextField(
                         value = uiState.value,
                         onValueChange = { viewModel.updateValue(it) },
-                        label = { Text("Valor (R$)") },
-                        modifier = Modifier.fillMaxWidth(),
+                        placeholder = "Valor (R$)",
+                        icon = Icons.Default.Info,
                         singleLine = true,
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Number
                         )
                     )
 
-
-                    OutlinedTextField(
+                    CustomTextField(
                         value = uiState.expirationDate,
                         onValueChange = { viewModel.updateExpirationDate(it) },
-                        label = { Text("Data de vencimento") },
+                        placeholder = "Data de vencimento",
+                        icon = Icons.Default.DateRange,
                         modifier = Modifier
-                            .fillMaxWidth()
                             .clickable {
 
                                 val calendar = Calendar.getInstance()
@@ -232,16 +233,16 @@ fun CreateBillScreen(
                                     calendar.get(Calendar.MONTH),
                                     calendar.get(Calendar.DAY_OF_MONTH)
                                 ).show()
-
                             },
                         enabled = false
                     )
 
-                    OutlinedTextField(
+
+                    CustomTextField(
                         value = uiState.description,
                         onValueChange = { viewModel.updateDescription(it) },
-                        label = { Text("Descrição (opcional)") },
-                        modifier = Modifier.fillMaxWidth()
+                        placeholder = "Descrição (opcional)",
+                        icon = Icons.Default.Edit
                     )
 
                     CustomButton(
