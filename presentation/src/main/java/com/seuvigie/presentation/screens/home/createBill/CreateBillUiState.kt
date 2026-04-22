@@ -8,7 +8,7 @@ data class CreateBillUiState(
     val description: String = "",
     val value: String = "",
     val expirationDate: String = "",
-    val accountTypes: AccountType? = null,
+    val accountTypes: List<AccountType?> = emptyList(),
     val recurrenceType: RecurrenceType? = null,
     val isLoading: Boolean = false,
     val isSuccess: Boolean = false

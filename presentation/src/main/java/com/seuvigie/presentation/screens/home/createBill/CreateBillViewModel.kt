@@ -42,8 +42,13 @@ class CreateBillViewModel @Inject constructor(
         _uiState.update { it.copy(expirationDate = expirationDate) }
     }
 
-    fun updateAccountTypes(accountType: AccountType) {
-        _uiState.update { it.copy(accountTypes = accountType) }
+    fun toggleAccountType(type: AccountType) {
+        _uiState.update { state ->
+            val updated = state.accountTypes.toMutableList().apply {
+                if (contains(type)) remove(type) else add(type)
+            }
+            state.copy(accountTypes = updated)
+        }
     }
 
     fun updateRecurrence(recurrenceType: RecurrenceType) {

@@ -4,7 +4,7 @@ data class Bill(
     val title: String? = null,
     val description: String? = null,
     val expirationDate: String? = null,
-    val accountTypes: AccountType? = null,
+    val accountTypes: List<AccountType?> = emptyList(),
     val recurrenceType: RecurrenceType? = null,
 )
 

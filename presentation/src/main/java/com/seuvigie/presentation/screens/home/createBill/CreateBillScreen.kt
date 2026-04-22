@@ -32,8 +32,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -66,13 +64,8 @@ fun CreateBillScreen(
     val snackBarHostState = remember { SnackbarHostState() }
 
     val recurrents = RecurrenceType.entries
-    val recurrencyType = remember { mutableStateOf(uiState.recurrenceType?.name) }
-
 
     val accountTypes = AccountType.entries
-    val accountSelection = remember { mutableStateListOf(uiState.accountTypes) }
-
-    val dataVencimento = remember { mutableStateOf(uiState.expirationDate) }
 
 
     val context = LocalContext.current
@@ -176,13 +169,9 @@ fun CreateBillScreen(
                         Row(verticalAlignment = Alignment.CenterVertically) {
 
                             Checkbox(
-                                checked = accountSelection.contains(tip),
-                                onCheckedChange = { checked ->
-                                    if (checked) {
-                                        accountSelection.add(tip)
-                                    } else {
-                                        accountSelection.remove(tip)
-                                    }
+                                checked = uiState.accountTypes.contains(tip),
+                                onCheckedChange = {
+                                    viewModel.toggleAccountType(tip)
                                 }
                             )
 
@@ -197,9 +186,9 @@ fun CreateBillScreen(
                         Row(verticalAlignment = Alignment.CenterVertically) {
 
                             RadioButton(
-                                selected = recurrencyType.value == rec.name,
+                                selected = uiState.recurrenceType == rec,
                                 onClick = {
-                                    recurrencyType.value = rec.name
+                                    viewModel.updateRecurrence(rec)
                                 }
                             )
 
@@ -233,8 +222,11 @@ fun CreateBillScreen(
                                 DatePickerDialog(
                                     context,
                                     { _, year, month, dayOfMonth ->
-                                        dataVencimento.value =
-                                            "$dayOfMonth/${month + 1}/$year"
+
+                                        val date = "$dayOfMonth/${month + 1}/$year"
+
+                                        viewModel.updateExpirationDate(date)
+
                                     },
                                     calendar.get(Calendar.YEAR),
                                     calendar.get(Calendar.MONTH),
