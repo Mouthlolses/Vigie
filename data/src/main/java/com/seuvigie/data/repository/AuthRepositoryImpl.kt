@@ -1,6 +1,7 @@
 package com.seuvigie.data.repository
 
 import com.seuvigie.data.remoteDataSource.AuthRemoteDataSource
+import com.seuvigie.domain.model.Bill
 import com.seuvigie.domain.model.User
 import com.seuvigie.domain.repository.AuthRepository
 import javax.inject.Inject
@@ -23,6 +24,10 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun getCurrentUser(): Result<User> {
         return remote.getCurrentUser()
+    }
+
+    override suspend fun getUserData(): Result<List<Bill>> {
+        return remote.getUserData()
     }
 
     override fun isUserLogged(): Boolean {

@@ -4,6 +4,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
+import com.seuvigie.domain.model.Bill
 import com.seuvigie.domain.model.User
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -15,6 +16,8 @@ interface AuthRemoteDataSource {
     suspend fun loginWithEmailAndPassword(email: String, password: String): Result<Unit>
 
     suspend fun getCurrentUser(): Result<User>
+
+    suspend fun getUserData(): Result<List<Bill>>
 
     fun isUserLogged(): Boolean
 
@@ -85,6 +88,31 @@ class AuthRemoteDataSourceImpl @Inject constructor(
                 ?: return Result.failure(Exception("Erro ao converter usuário"))
 
             Result.success(user)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun getUserData(): Result<List<Bill>> {
+        return try {
+
+            val uid = firebaseAuth.currentUser?.uid
+                ?: return Result.failure(Exception("Usuário não autenticado"))
+
+            val snapshot = firestore
+                .collection("users")
+                .document(uid)
+                .collection("bills")
+                .get()
+                .await()
+
+            val bills = snapshot.documents.mapNotNull { doc ->
+                doc.toObject(Bill::class.java)
+            }
+
+
+            Result.success(bills)
+
         } catch (e: Exception) {
             Result.failure(e)
         }

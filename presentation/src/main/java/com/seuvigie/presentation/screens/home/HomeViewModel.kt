@@ -2,7 +2,7 @@ package com.seuvigie.presentation.screens.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.seuvigie.domain.usecase.user.GetCurrentUserDataUseCase
+import com.seuvigie.domain.usecase.user.GetUserWithBillsUseCase
 import com.seuvigie.domain.usecase.user.UserLogoutUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val getCurrentUserDataUseCase: GetCurrentUserDataUseCase,
+    private val getUserWithBillsUseCase: GetUserWithBillsUseCase,
     private val userLogoutUseCase: UserLogoutUseCase
 ) : ViewModel() {
 
@@ -30,24 +30,26 @@ class HomeViewModel @Inject constructor(
 
 
     init {
-        getCurrentUser()
+        getUserWithBills()
     }
 
 
-    fun getCurrentUser() {
+    fun getUserWithBills() {
         viewModelScope.launch {
-
             _uiState.value = HomeUiState.IsLoading
-
             try {
-                val result = getCurrentUserDataUseCase()
+                val result = getUserWithBillsUseCase()
 
                 result.fold(
                     onSuccess = { data ->
-                        _uiState.value = HomeUiState.Success(data)
+                        _uiState.value = HomeUiState.Success(
+                            data = data
+                        )
                     },
-                    onFailure = { error ->
-                        _uiState.value = HomeUiState.Error(error.message ?: "Erro inesperado")
+                    onFailure = {
+                        _uiState.value = HomeUiState.Error(
+                            it.message ?: "Erro inesperado"
+                        )
                     }
                 )
 
@@ -56,6 +58,7 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
+
 
     fun logoutUser() {
         viewModelScope.launch {

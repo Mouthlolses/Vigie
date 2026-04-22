@@ -13,7 +13,9 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -86,7 +88,7 @@ fun HomeScreen(
                     CenterAlignedTopAppBar(
                         title = {
                             Text(
-                                text = "Olá ${(state.data.name)}",
+                                text = "Olá ${(state.data.user.name)}",
                                 color = Color.White,
                                 fontSize = 26.sp,
                                 fontWeight = FontWeight.Bold
@@ -144,7 +146,7 @@ fun HomeScreen(
                             shape = RoundedCornerShape(24.dp),
                             modifier = Modifier
                                 .fillMaxWidth(0.9f)
-                                .heightIn(max = 600.dp),
+                                .heightIn(min = 260.dp, max = 600.dp),
                             colors = CardDefaults.cardColors(
                                 containerColor = Color.White
                             ),
@@ -152,20 +154,28 @@ fun HomeScreen(
                         ) {
                             LazyColumn(
                                 modifier = Modifier
-                                    .fillMaxSize()
+                                    .wrapContentHeight() // expansivel conforme conteúdo
                                     .padding(16.dp)
                             ) {
-                                items(20) {
-                                    ReminderItem(
-                                        "Extra Item $it",
-                                        it,
-                                        it % 2 == 0,
-                                        onClick = {
-                                            onNavigate()
-                                        },
-                                        rowEnable = true
-                                    )
-                                    HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+                                if (state.data.bills.isEmpty()) {
+                                    item {
+                                        Text("Vamos começar?")
+                                    }
+                                } else {
+                                    items(state.data.bills) { bill ->
+                                        ReminderItem(
+                                            "Extra Item ${bill.title}",
+                                            2,
+                                            true,
+                                            onClick = {
+                                                onNavigate()
+                                            },
+                                            rowEnable = true
+                                        )
+                                        HorizontalDivider(
+                                            modifier = Modifier.padding(vertical = 8.dp)
+                                        )
+                                    }
                                 }
                             }
                         }
