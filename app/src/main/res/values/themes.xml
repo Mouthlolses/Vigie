@@ -2,4 +2,21 @@
 <resources>
 
     <style name="Theme.Vigie" parent="android:Theme.Material.Light.NoActionBar" />
+
+
+
+    <style name="Theme.Vigie.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/white</item>
+
+        <!-- ícone -->
+        <item name="windowSplashScreenAnimatedIcon">@drawable/vigie_logo_melhorada_semfundo</item>
+
+        <!-- tempo de animação -->
+        <item name="windowSplashScreenAnimationDuration">300</item>
+
+        <!-- tema depois do splash -->
+        <item name="postSplashScreenTheme">@style/Theme.Vigie</item>
+    </style>
+
+
 </resources>

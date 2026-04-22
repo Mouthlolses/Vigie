@@ -22,7 +22,6 @@ import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
@@ -43,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.seuvigie.presentation.components.ReminderItem
+import com.seuvigie.presentation.screens.home.skeletontest.HomeSkeleton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,15 +67,7 @@ fun HomeScreen(
     when (val state = uiState) {
 
         is HomeUiState.IsLoading -> {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator(
-                    color = Color(0xFF5A00D1)
-                )
-            }
+            HomeSkeleton()
         }
 
         is HomeUiState.Error -> {

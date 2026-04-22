@@ -21,13 +21,11 @@ import kotlinx.serialization.ExperimentalSerializationApi
 
 @OptIn(ExperimentalSerializationApi::class, ExperimentalSharedTransitionApi::class)
 @Composable
-fun AppRoot(webClient: String) {
-
-    val viewmodel: AppViewModel = hiltViewModel()
+fun AppRoot(webClient: String, isLogged: Boolean) {
 
     val navController: NavHostController = rememberNavController()
 
-    val startDestination = if (viewmodel.isUserLogged()) {
+    val startDestination = if (isLogged) {
         Routes.Home
     } else {
         Routes.Login

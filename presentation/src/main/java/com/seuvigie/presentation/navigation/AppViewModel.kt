@@ -1,5 +1,8 @@
 package com.seuvigie.presentation.navigation
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.seuvigie.domain.usecase.user.CheckAuthUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -10,7 +13,15 @@ class AppViewModel @Inject constructor(
     private val checkAuthUseCase: CheckAuthUseCase
 ) : ViewModel() {
 
-    fun isUserLogged(): Boolean {
-        return checkAuthUseCase()
+
+    var isLogged by mutableStateOf<Boolean?>(null)
+        private set
+
+    init {
+        isLogged = runCatching {
+            checkAuthUseCase()
+        }.getOrElse {
+            false
+        }
     }
 }
