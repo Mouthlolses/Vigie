@@ -43,7 +43,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.seuvigie.domain.model.Bill
 import com.seuvigie.presentation.components.ReminderItem
 import com.seuvigie.presentation.components.skeleton.SkeletonLoad
 
@@ -165,7 +164,7 @@ fun HomeScreen(
                                 } else {
                                     items(state.data.bills) { bill ->
                                         ReminderItem(
-                                            "Extra Item ${bill.title}",
+                                            "${bill.title}",
                                             2,
                                             true,
                                             onClick = {
