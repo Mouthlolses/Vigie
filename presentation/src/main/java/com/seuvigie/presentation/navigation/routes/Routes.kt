@@ -16,9 +16,8 @@ sealed class Routes {
 
     @Serializable
     data object Home : Routes()
-
     @Serializable
-    data object Details : Routes()
+    data class Details(val billId: String) : Routes()
 
 
     @Serializable

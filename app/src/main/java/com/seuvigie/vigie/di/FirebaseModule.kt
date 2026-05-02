@@ -1,4 +1,4 @@
-package com.seuvigie.data.di
+package com.seuvigie.vigie.di
 
 import android.content.Context
 import com.google.android.gms.auth.api.signin.GoogleSignIn

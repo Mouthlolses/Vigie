@@ -7,7 +7,7 @@ import com.seuvigie.domain.repository.RegisterRepository
 import javax.inject.Inject
 
 class RegisterRepositoryImpl @Inject constructor(
-    private val registerRemoteDataSource: RegisterRemoteDataSource
+    private val remote: RegisterRemoteDataSource
 ) : RegisterRepository {
 
     override suspend fun registerUser(
@@ -15,7 +15,7 @@ class RegisterRepositoryImpl @Inject constructor(
         email: String,
         password: String
     ): Result<Unit> {
-        return registerRemoteDataSource.registerUser(
+        return remote.registerUser(
             name = name,
             email = email,
             password = password
@@ -24,11 +24,11 @@ class RegisterRepositoryImpl @Inject constructor(
 
 
     override suspend fun registerBill(bill: Bill): Result<Bill> {
-        return registerRemoteDataSource.registerBill(bill)
+        return remote.registerBill(bill)
     }
 
     override suspend fun saveUserIfNotExists(user: User) {
-        registerRemoteDataSource.saveUserIfNotExists(user)
+        remote.saveUserIfNotExists(user)
     }
 
 }

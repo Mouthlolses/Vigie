@@ -43,13 +43,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.seuvigie.domain.model.Bill
 import com.seuvigie.presentation.components.ReminderItem
-import com.seuvigie.presentation.screens.home.skeletontest.HomeSkeleton
+import com.seuvigie.presentation.components.skeleton.SkeletonLoad
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    onNavigate: () -> Unit,
+    onNavigate: (billId: String) -> Unit,
     onNavigateToCreationBill: () -> Unit,
     onLogout: () -> Unit
 ) {
@@ -69,7 +70,7 @@ fun HomeScreen(
     when (val state = uiState) {
 
         is HomeUiState.IsLoading -> {
-            HomeSkeleton()
+            SkeletonLoad()
         }
 
         is HomeUiState.Error -> {
@@ -168,7 +169,11 @@ fun HomeScreen(
                                             2,
                                             true,
                                             onClick = {
-                                                onNavigate()
+                                                bill.id?.let {
+                                                    onNavigate(
+                                                        it
+                                                    )
+                                                }
                                             },
                                             rowEnable = true
                                         )

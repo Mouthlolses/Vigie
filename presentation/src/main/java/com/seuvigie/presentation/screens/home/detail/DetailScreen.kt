@@ -23,133 +23,158 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Devices
-import androidx.compose.ui.tooling.preview.Devices.PIXEL_6_PRO
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.seuvigie.presentation.R
 import com.seuvigie.presentation.components.DetailTab
 import com.seuvigie.presentation.components.ReminderItem
+import com.seuvigie.presentation.components.skeleton.SkeletonLoad
 import com.seuvigie.presentation.screens.home.detail.pagerContents.ScreenSavingTips
 
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview(device = Devices.PIXEL_3)
 @Composable
 fun DetailScreen(
     onBackHomeScreen: () -> Unit = {}
 ) {
 
-    val pages: List<@Composable () -> Unit> = listOf(
-        {
-            ReminderItem(
-                rowEnable = false
-            )
-        },
-        {
-            ScreenSavingTips()
-        },
-        {
+    val viewModel: DetailViewModel = hiltViewModel()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
 
+
+    when (val uiState = state) {
+
+        is DetailUiState.IsLoading -> {
+            SkeletonLoad()
         }
-    )
 
-    val pagerState = rememberPagerState(
-        pageCount = { pages.size }
-    )
+        is DetailUiState.Error -> {
+            Text(text = uiState.message)
+        }
 
-    Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        text = "Detalhes",
-                        color = Color.White,
-                        fontSize = 26.sp,
-                        fontWeight = FontWeight.Bold,
+        is DetailUiState.Success -> {
+            val pages
+                    : List<@Composable () -> Unit> = listOf(
+                {
+                    ReminderItem(
+                        "Extra Item ${uiState.data.title}",
+                        2,
+                        true,
+                        rowEnable = false
                     )
                 },
-                navigationIcon = {
-                    IconButton(
-                        onClick = {
-                            onBackHomeScreen()
-                        }
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_action_outline_arrow_back),
-                            contentDescription = "back",
+                {
+                    ScreenSavingTips()
+                },
+                {
+
+                }
+            )
+
+            val pagerState = rememberPagerState(
+                pageCount = { pages.size }
+            )
+
+            Scaffold(
+                topBar = {
+                    CenterAlignedTopAppBar(
+                        title = {
+                            Text(
+                                text = "Detalhes",
+                                color = Color.White,
+                                fontSize = 26.sp,
+                                fontWeight = FontWeight.Bold,
+                            )
+                        },
+                        navigationIcon = {
+                            IconButton(
+                                onClick = {
+                                    onBackHomeScreen()
+                                }
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.ic_action_outline_arrow_back),
+                                    contentDescription = "back",
+                                    modifier = Modifier
+                                        .size(26.dp),
+                                    tint = Color.White
+                                )
+                            }
+                        },
+                        colors = TopAppBarDefaults.topAppBarColors(
+                            containerColor = Color(0xFF5A00D1)
+                        )
+                    )
+                }
+            ) { paddingValues ->
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                ) {
+
+                    Column(modifier = Modifier.fillMaxSize()) {
+                        Box(
                             modifier = Modifier
-                                .size(26.dp),
-                            tint = Color.White
+                                .weight(0.32f)
+                                .fillMaxWidth()
+                                .background(Color(0xFF5A00D1))
+                        )
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxWidth()
+                                .background(Color.White)
                         )
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFF5A00D1)
-                )
-            )
-        }
-    ) { paddingValues ->
-
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-
-            Column(modifier = Modifier.fillMaxSize()) {
-                Box(
-                    modifier = Modifier
-                        .weight(0.32f)
-                        .fillMaxWidth()
-                        .background(Color(0xFF5A00D1))
-                )
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxWidth()
-                        .background(Color.White)
-                )
-            }
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(top = 20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Spacer(modifier = Modifier.height(67.dp))
-
-                Card(
-                    shape = RoundedCornerShape(24.dp),
-                    modifier = Modifier
-                        .fillMaxWidth(0.86f)
-                        .heightIn(min = 125.dp, max = 200.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = Color.White
-                    ),
-                    elevation = CardDefaults.cardElevation(8.dp)
-                ) {
-                    HorizontalPager(
-                        state = pagerState,
+                    Column(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 12.dp, end = 12.dp, top = 26.dp, bottom = 26.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) { page ->
-                        pages[page]()
+                            .fillMaxSize()
+                            .padding(top = 20.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Spacer(modifier = Modifier.height(67.dp))
+
+                        Card(
+                            shape = RoundedCornerShape(24.dp),
+                            modifier = Modifier
+                                .fillMaxWidth(0.86f)
+                                .heightIn(min = 125.dp, max = 200.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = Color.White
+                            ),
+                            elevation = CardDefaults.cardElevation(8.dp)
+                        ) {
+                            HorizontalPager(
+                                state = pagerState,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(
+                                        start = 12.dp,
+                                        end = 12.dp,
+                                        top = 26.dp,
+                                        bottom = 26.dp
+                                    ),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) { page ->
+                                pages[page]()
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(22.dp))
+
+                        DetailTab()
                     }
                 }
-
-                Spacer(modifier = Modifier.height(22.dp))
-
-                DetailTab()
             }
         }
     }

@@ -19,6 +19,8 @@ interface AuthRemoteDataSource {
 
     suspend fun getUserData(): Result<List<Bill>>
 
+    suspend fun getBillById(billId: String): Result<Bill>
+
     fun isUserLogged(): Boolean
 
     suspend fun logout(): Result<Unit>
@@ -116,6 +118,30 @@ class AuthRemoteDataSourceImpl @Inject constructor(
         } catch (e: Exception) {
             Result.failure(e)
         }
+    }
+
+    override suspend fun getBillById(billId: String): Result<Bill> {
+        return try {
+
+            val uid = firebaseAuth.currentUser?.uid
+                ?: return Result.failure(Exception("Usuário não autenticado"))
+
+            val snapshot = firestore
+                .collection("users")
+                .document(uid)
+                .collection("bills")
+                .document(billId)
+                .get()
+                .await()
+
+            val bill = snapshot.toObject(Bill::class.java)
+                ?: return Result.failure(Exception("Erro ao converter bill"))
+
+            Result.success(bill)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+
     }
 
     override fun isUserLogged(): Boolean {

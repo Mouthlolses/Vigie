@@ -1,8 +1,10 @@
-package com.seuvigie.data.di
+package com.seuvigie.vigie.di
 
 import com.seuvigie.data.repository.AuthRepositoryImpl
+import com.seuvigie.data.repository.BillRepositoryImpl
 import com.seuvigie.data.repository.RegisterRepositoryImpl
 import com.seuvigie.domain.repository.AuthRepository
+import com.seuvigie.domain.repository.BillRepository
 import com.seuvigie.domain.repository.RegisterRepository
 import dagger.Binds
 import dagger.Module
@@ -25,4 +27,10 @@ abstract class RepositoryModule {
     abstract fun bindRegisterRepository(
         impl: RegisterRepositoryImpl
     ): RegisterRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindBillRepository(
+        impl: BillRepositoryImpl
+    ): BillRepository
 }

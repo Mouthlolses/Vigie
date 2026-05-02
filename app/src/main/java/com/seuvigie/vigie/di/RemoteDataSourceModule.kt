@@ -1,4 +1,4 @@
-package com.seuvigie.data.di
+package com.seuvigie.vigie.di
 
 import com.seuvigie.data.remoteDataSource.AuthRemoteDataSource
 import com.seuvigie.data.remoteDataSource.AuthRemoteDataSourceImpl
@@ -12,7 +12,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class DataSourceModule {
+abstract class RemoteDataSourceModule {
 
     @Binds
     @Singleton

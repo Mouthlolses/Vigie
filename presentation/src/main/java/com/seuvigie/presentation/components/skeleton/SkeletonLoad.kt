@@ -1,4 +1,4 @@
-package com.seuvigie.presentation.screens.home.skeletontest
+package com.seuvigie.presentation.components.skeleton
 
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -23,7 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun HomeSkeleton() {
+fun SkeletonLoad() {
 
     val shimmer = shimmerBrush()
 
@@ -45,7 +45,7 @@ fun HomeSkeleton() {
             Spacer(modifier = Modifier.height(24.dp))
         }
 
-        items(10) { // mais itens pra preencher a tela
+        items(10) {
             BillItemSkeleton(shimmer)
             Spacer(modifier = Modifier.height(16.dp))
         }

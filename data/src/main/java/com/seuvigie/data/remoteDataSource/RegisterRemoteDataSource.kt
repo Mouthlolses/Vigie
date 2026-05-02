@@ -66,14 +66,19 @@ class RegisterRemoteDataSourceImpl @Inject constructor(
             val uid = firebaseAuth.currentUser?.uid
                 ?: return Result.failure(Exception("Usuário não autenticado"))
 
-            firestore
+            val docRef = firestore
                 .collection("users")
                 .document(uid)
                 .collection("bills")
-                .add(bill)
-                .await()
+                .document()
 
-            Result.success(bill)
+            val billWithId = bill.copy(
+                id = docRef.id
+            )
+
+            docRef.set(billWithId).await()
+
+            Result.success(billWithId)
 
         } catch (e: Exception) {
             Result.failure(e)
